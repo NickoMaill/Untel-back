@@ -10,4 +10,11 @@ CREATE TABLE gig_dates (
     added_at VARCHAR(50)
 );
 
+CREATE TABLE albums (
+    album_id VARCHAR(50) UNIQUE PRIMARY KEY NOT NULL,
+    title VARCHAR(50),
+    year INTEGER,
+    
+)
+
 SELECT * FROM gig_dates;
