@@ -4,7 +4,7 @@ const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
-const upload = multer({ dest: "public/images" });
+const upload = multer({ dest: "public/uploads" });
 const fs = require("fs");
 const path = require("path");
 const currentDate = require("../utils/getCurrentDate");
@@ -26,9 +26,9 @@ route.get("/", async (_req, res) => {
 	}
 });
 
-route.post("/add-album", async (req, res) => {
+route.post("/add-album", upload.single("image"), async (req, res) => {
 	let type = path.extname(req.file.originalname);
-	let fileName = `${req.title}-${currentDate("date")}${type}`;
+	let fileName = `${req.body.title.toLowerCase()}-${currentDate("date")}${type}`;
 
 	try {
 		await Postgres.query(
@@ -40,10 +40,10 @@ route.post("/add-album", async (req, res) => {
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
-				`${req.file.destination}/${fileName}`,
+				{ cover: `${req.file.destination}/${fileName}` },
 			]
 		);
-        fs.renameSync(req.file.path, path.join(req.file.destination, `${fileName}`));
+		fs.renameSync(req.file.path, path.join(req.file.destination, `${fileName}`));
 		res.status(201).json({
 			success: true,
 			message: "album added",
