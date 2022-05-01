@@ -1,6 +1,7 @@
 const express = require("express");
 const route = express.Router();
 const bcrypt = require("bcrypt");
+const sendEmail = require("../middlewares/sendEmail");
 
 route.post("/login", async (req, res) => {
 	const decodeHash = await bcrypt.compare(req.body.password, process.env.ADMIN_PASS);
@@ -26,6 +27,14 @@ route.post("/login", async (req, res) => {
 			message: "an error happened",
 		});
 	}
+});
+
+route.post("/send-email", sendEmail, (req, res) => {
+	console.log(req.body);
+	res.status(202).json({
+		success: true,
+		message: "email send",
+	});
 });
 
 module.exports = route;
