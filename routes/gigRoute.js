@@ -53,9 +53,37 @@ route.post("/add", async (req, res) => {
 	}
 });
 
-route.delete("/delete", async (req, res) => {
+route.put("/update-album/:id", async (req, res) => {
 	try {
-		await Postgres.query("DELETE FROM gig_date WHERE gig_id = $1", [req.body.gigId]);
+		await Postgres.query(
+			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, updated_at = $7 WHERE event_id = $8",
+			[
+				req.body.place,
+				req.body.city,
+				req.body.country,
+				req.body.date,
+				req.body.eventLink,
+				req.body.isCanceled,
+				req.body.updatedAt,
+				req.params.id,
+			]
+		);
+		res.status(202).json({
+			success: true,
+			message: "gig updated",
+		});
+	} catch (err) {
+		console.error(err);
+		res.status(400).json({
+			success: false,
+			message: "an error happened while updating gig data",
+		});
+	}
+});
+
+route.delete("/delete/:id", async (req, res) => {
+	try {
+		await Postgres.query("DELETE FROM gig_date WHERE gig_id = $1", [req.params.id]);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({

@@ -72,7 +72,7 @@ route.put("/update-album/:id", async (req, res) => {
 				`${req.file.destination}/${fileName}`,
 				req.body.color,
 				req.body.isReleased,
-				uuidv4(),
+				req.params.id,
 			]
 		);
 		res.status(202).json({
