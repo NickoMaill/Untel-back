@@ -32,7 +32,7 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 
 	try {
 		await Postgres.query(
-			"INSERT INTO albums (album_id, title, year, description, playlist_link, video_link, photos_paths) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+			"INSERT INTO albums (album_id, title, year, description, playlist_link, video_link, photos_paths, color, is_released) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
 			[
 				uuidv4(),
 				req.body.title,
@@ -40,7 +40,9 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
-				{ cover: `${req.file.destination}/${fileName}` },
+				`${req.file.destination}/${fileName}`,
+				req.body.color,
+				req.body.isReleased,
 			]
 		);
 		fs.renameSync(req.file.path, path.join(req.file.destination, `${fileName}`));
@@ -53,6 +55,51 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 		res.status(400).json({
 			success: false,
 			message: "an error happened when add an album",
+		});
+	}
+});
+
+route.put("/update-album/:id", async (req, res) => {
+	try {
+		await Postgres.query(
+			"UPDATE albums SET title = $1, year = $2, description = $3, playlist_link = $4, video_link = $5,  color = $6, is_released = $7 WHERE album_id = $8",
+			[
+				req.body.title,
+				req.body.year,
+				req.body.description,
+				req.body.playlistLink,
+				req.body.videoLink,
+				`${req.file.destination}/${fileName}`,
+				req.body.color,
+				req.body.isReleased,
+				uuidv4(),
+			]
+		);
+		res.status(202).json({
+			success: true,
+			message: "album updated",
+		});
+	} catch (err) {
+		console.error(err);
+		res.status(400).json({
+			success: false,
+			message: "an error happened while updating album data",
+		});
+	}
+});
+
+route.delete("/delete", async (req, res) => {
+	try {
+		await Postgres.query("DELETE FROM albums WHERE album_id = $1", [req.body.albumId]);
+		res.status(202).json({
+			success: true,
+			message: "album deleted",
+		});
+	} catch (err) {
+		console.error(err);
+		res.status(400).json({
+			success: false,
+			message: "an error happened while updating album data",
 		});
 	}
 });
