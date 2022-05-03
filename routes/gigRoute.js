@@ -53,10 +53,10 @@ route.post("/add", async (req, res) => {
 	}
 });
 
-route.put("/update-album/:id", async (req, res) => {
+route.put("/update-gig/:id", async (req, res) => {
 	try {
 		await Postgres.query(
-			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, updated_at = $7 WHERE event_id = $8",
+			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, uppdated_at = $7 WHERE event_id = $8",
 			[
 				req.body.place,
 				req.body.city,
@@ -64,7 +64,7 @@ route.put("/update-album/:id", async (req, res) => {
 				req.body.date,
 				req.body.eventLink,
 				req.body.isCanceled,
-				req.body.updatedAt,
+				currentDate("date"),
 				req.params.id,
 			]
 		);

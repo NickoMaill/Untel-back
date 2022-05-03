@@ -4,7 +4,7 @@ const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
-const upload = multer({ dest: "public/uploads" });
+const upload = multer({ dest: "public/uploads/albumCovers" });
 const fs = require("fs");
 const path = require("path");
 const currentDate = require("../utils/getCurrentDate");
@@ -28,19 +28,20 @@ route.get("/", async (_req, res) => {
 
 route.post("/add-album", upload.single("image"), async (req, res) => {
 	let type = path.extname(req.file.originalname);
-	let fileName = `${req.body.title.toLowerCase()}-${currentDate("date")}${type}`;
+	let fileName = `${req.body.title.toLowerCase().replace(/ /g, "-")}-${currentDate("date")}${type}`;
 
 	try {
 		await Postgres.query(
-			"INSERT INTO albums (album_id, title, year, description, playlist_link, video_link, photos_paths, color, is_released) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+			"INSERT INTO albums (album_id, title, subtitle, year, description, playlist_link, video_link, photos_paths, color, is_released) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
 			[
 				uuidv4(),
 				req.body.title,
+				req.body.subtitle,
 				req.body.year,
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
-				`${req.file.destination}/${fileName}`,
+				`uploads/albumCovers/${fileName}`,
 				req.body.color,
 				req.body.isReleased,
 			]

@@ -16,12 +16,17 @@ CREATE TABLE albums (
     description VARCHAR(1000),
     playlist_link VARCHAR(100),
     video_link  VARCHAR(100),
-	photos_paths JSON
+	photos_paths VARCHAR(70),
+	color VARCHAR(50),
+	is_released BOOLEAN
 );
 
--- ALTER TABLE albums ADD COLUMN photo_path VARCHAR(100)
+-- DELETE FROM albums WHERE album_id = '4839369a-a99d-4b3a-9c32-594e8a2a777a'
+
+-- ALTER TABLE albums ADD COLUMN is_released BOOLEAN
+-- ALTER TABLE gig_dates ADD COLUMN uppdated_at DATE
 
 -- DROP SCHEMA public CASCADE;
 -- CREATE SCHEMA public;
 
-SELECT * FROM albums;
+SELECT * FROM gig_dates;

@@ -11,19 +11,20 @@ route.post("/login", async (req, res) => {
 		if (!decodeHash) {
 			res.status(401).res.json({
 				success: false,
+				goodPassword: false,
 				message: "wrong credentials",
 			});
 		}
 		res.status(202)
 			.json({
 				success: true,
+				goodPassword: true,
 				message: "access granted",
 			})
-			.redirect("/");
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
-			success: 400,
+			success: false,
 			message: "an error happened",
 		});
 	}
