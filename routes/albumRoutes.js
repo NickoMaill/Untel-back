@@ -9,7 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const currentDate = require("../utils/getCurrentDate");
 
-route.get("/", async (_req, res) => {
+route.get("/all", async (_req, res) => {
 	const albums = await Postgres.query("SELECT * FROM albums");
 	try {
 		albums;
@@ -26,13 +26,30 @@ route.get("/", async (_req, res) => {
 	}
 });
 
+route.get("/:id", async (req, res) => {
+	const album = await Postgres.query("SELECT * FROM albums WHERE album_id = $1", [req.params.id]);
+	try {
+		album;
+		res.status(200).json({
+			success: true,
+			album: album.rows,
+		});
+	} catch (err) {
+		console.error(err);
+		res.status(400).json({
+			success: false,
+			message: "an error happened while charging album",
+		});
+	}
+});
+
 route.post("/add-album", upload.single("image"), async (req, res) => {
 	let type = path.extname(req.file.originalname);
 	let fileName = `${req.body.title.toLowerCase().replace(/ /g, "-")}-${currentDate("date")}${type}`;
 
 	try {
 		await Postgres.query(
-			"INSERT INTO albums (album_id, title, subtitle, year, description, playlist_link, video_link, photos_paths, color, is_released) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+			"INSERT INTO albums (album_id, title, subtitle, year, description, playlist_link, video_link, photo_path, color, is_released) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
 			[
 				uuidv4(),
 				req.body.title,
@@ -63,14 +80,14 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 route.put("/update-album/:id", async (req, res) => {
 	try {
 		await Postgres.query(
-			"UPDATE albums SET title = $1, year = $2, description = $3, playlist_link = $4, video_link = $5,  color = $6, is_released = $7 WHERE album_id = $8",
+			"UPDATE albums SET title = $1, year = $2, description = $3, playlist_link = $4, video_link = $5, photo_path = $6, color = $7, is_released = $8 WHERE album_id = $9",
 			[
 				req.body.title,
 				req.body.year,
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
-				`${req.file.destination}/${fileName}`,
+				req.body.photoPath,
 				req.body.color,
 				req.body.isReleased,
 				req.params.id,
