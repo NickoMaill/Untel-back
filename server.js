@@ -57,14 +57,16 @@ app.get("/", async (_req, res) => {
 
 app.get("/instagram", async (req, res) => {
 	const data = await fetch(`https://www.instagram.com/untel.officiel/channel/?__a=1`);
+	const response = await data.json();
+	const array = [];
 
-	if (data.size === 0) {
+	if (!response) {
 		res.json(backup).status(200);
 	} else {
-		const response = await data.json();
 		res.json(response).status(200);
-		fs.writeFile("./data/post.json", response, (err) => {
-			if (err) throw err
+		array.push(response);
+		fs.writeFile("./data/post.json", JSON.stringify(array), "utf-8", (err) => {
+			if (err) throw err;
 			console.log("fichier mis a jour");
 		});
 	}
