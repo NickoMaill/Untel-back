@@ -8,6 +8,7 @@ const cors = (req, res, next) => {
 	res.setHeader("Access-Control-Allow-Credentials", "true");
 	res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 	res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-Width, Content-type, Accept");
+	res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
 	next();
 };
 
