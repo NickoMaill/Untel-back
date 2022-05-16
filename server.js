@@ -56,19 +56,20 @@ app.get("/", async (_req, res) => {
 });
 
 app.get("/instagram", async (req, res) => {
-	const data = await fetch(`https://www.instagram.com/untel.officiel/channel/?__a=1`);
-	const response = await data.json();
+	const data = await fetch(`https://www.instagram.com/graphql/query/?query_id=17888483320059182&id=15269823200&first=1000`);
+	const contentType = data.headers.get("content-type");
 	const array = [];
 
-	if (!response) {
-		res.json(backup).status(200);
-	} else {
-		res.json(response).status(200);
+	if (contentType && contentType.indexOf("application/json") !== -1) {
+		const response = await data.json();
 		array.push(response);
 		fs.writeFile("./data/post.json", JSON.stringify(array), "utf-8", (err) => {
 			if (err) throw err;
 			console.log("fichier mis a jour");
 		});
+		res.json(backup[0].data.user.edge_owner_to_timeline_media).status(200);
+	} else {
+		res.json(backup[0].data.user.edge_owner_to_timeline_media).status(200);
 	}
 });
 
