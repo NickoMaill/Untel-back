@@ -77,22 +77,50 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 	}
 });
 
-route.put("/update-album/:id", async (req, res) => {
+route.put("/update-album/:id", upload.single("image"), async (req, res) => {
+	let type;
+	let fileName;
+	let imgPath;
+
+	if (!req.file) {
+		const photoPath = await Postgres.query("SELECT photo_path FROM albums WHERE album_id = $1", [req.params.id])
+		console.log(photoPath.rows);
+		try {
+			imgPath = photoPath.rows[0].photo_path
+		} catch (err) {
+			console.error(err);
+			res.status(400).json({
+				success: false,
+				message: "an error happened while updating album data",
+			});
+		}
+	} else {
+		type = path.extname(req.file.originalname);
+		fileName = `${req.body.title.toLowerCase().replace(/ /g, "-")}-${currentDate("date")}${type}`;
+		imgPath = `uploads/albumCovers/${fileName}`;
+
+	}
+
 	try {
 		await Postgres.query(
-			"UPDATE albums SET title = $1, year = $2, description = $3, playlist_link = $4, video_link = $5, photo_path = $6, color = $7, is_released = $8 WHERE album_id = $9",
+			"UPDATE albums SET title = $1, subtitle = $2, year = $3, description = $4, playlist_link = $5, video_link = $6, photo_path = $7, color = $8, is_released = $9 WHERE album_id = $10",
 			[
 				req.body.title,
+				req.body.subtitle,
 				req.body.year,
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
-				req.body.photoPath,
+				imgPath,
 				req.body.color,
 				req.body.isReleased,
 				req.params.id,
 			]
 		);
+		if (req.file) {
+			fs.renameSync(req.file.path, path.join(req.file.destination, `${fileName}`));
+		}
+
 		res.status(202).json({
 			success: true,
 			message: "album updated",

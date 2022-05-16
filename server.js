@@ -7,11 +7,14 @@ dotenv.config({
 });
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
+const fetch = require("node-fetch");
+const fs = require("fs");
 
 //ROUTE IMPORT
 const gigDatesRoutes = require("./routes/gigRoute");
 const adminRoute = require("./routes/adminRoutes");
 const albumRoutes = require("./routes/albumRoutes");
+const backup = require("./data/post.json");
 
 //MIDDLEWARES
 const cors = require("./middlewares/cors");
@@ -48,6 +51,21 @@ app.get("/", async (_req, res) => {
 		res.status(400).json({
 			success: false,
 			message: "An error happened when fetching datas",
+		});
+	}
+});
+
+app.get("/instagram", async (req, res) => {
+	const data = await fetch(`https://www.instagram.com/untel.officiel/channel/?__a=1`);
+
+	if (data.size === 0) {
+		res.json(backup).status(200);
+	} else {
+		const response = await data.json();
+		res.json(response).status(200);
+		fs.writeFile("./data/post.json", response, (err) => {
+			if (err) throw err
+			console.log("fichier mis a jour");
 		});
 	}
 });
