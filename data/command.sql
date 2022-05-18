@@ -18,7 +18,40 @@ CREATE TABLE albums (
     video_link  VARCHAR(100),
 	photos_paths VARCHAR(70),
 	color VARCHAR(50),
-	is_released BOOLEAN
+	is_released BOOLEAN,
+    price INTEGER FLOAT
+);
+
+CREATE TABLE orders (
+    order_id VARCHAR(50) UNIQUE PRIMARY KEY NOT NULL,
+    item_id VARCHAR(50) NOT NULL,
+    name_item VARCHAR(50) NOT NULL,
+    client_firstName VARCHAR(50),
+    client_lastName VARCHAR(50),
+    client_email VARCHAR(50),
+    city VARCHAR(50),
+    country VARCHAR(50),
+    amount FLOAT INTEGER,
+    currency VARCHAR(50),
+    date_of_order VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES albums(album_id)
+);
+
+CREATE TABLE request_history(
+    request_id SERIAL PRIMARY KEY,
+    route_request VARCHAR(50) NOT NULL,
+    method VARCHAR(20) NOT NULL,
+    date_request VARCHAR(50),
+    time_request VARCHAR(50),
+);
+
+CREATE TABLE media(
+    media_id UNIQUE PRIMARY KEY NOT NULL,
+    path VARCHAR(200),
+    type VARCHAR(20),
+    size INTEGER,
+    is_video BOOLEAN DEFAULT NULL,
+    added_at VARCHAR(50),
 );
 
 -- DELETE FROM albums WHERE album_id = '4839369a-a99d-4b3a-9c32-594e8a2a777a'

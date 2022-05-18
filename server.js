@@ -1,19 +1,19 @@
 //IMPORT
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv");
-dotenv.config({
+require("dotenv").config({
 	path: "./config.env",
 });
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const fetch = require("node-fetch");
-const fs = require("fs");
+const fs = require("fs")
 
 //ROUTE IMPORT
 const gigDatesRoutes = require("./routes/gigRoute");
 const adminRoute = require("./routes/adminRoutes");
 const albumRoutes = require("./routes/albumRoutes");
+const ordersRoutes = require("./routes/orderRoutes");
 const backup = require("./data/post.json");
 
 //MIDDLEWARES
@@ -26,11 +26,15 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cors);
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
 //ROUTES INIT
 app.use("/gig_dates", gigDatesRoutes);
 app.use("/admin", adminRoute);
 app.use("/albums", albumRoutes);
+app.use("/orders", ordersRoutes);
+
+// console.log(isNaN(parseFloat("12.2")));
 
 app.get("/", async (_req, res) => {
 	const gigs = await Postgres.query("SELECT * FROM gig_dates");
@@ -56,7 +60,9 @@ app.get("/", async (_req, res) => {
 });
 
 app.get("/instagram", async (req, res) => {
-	const data = await fetch(`https://www.instagram.com/graphql/query/?query_id=17888483320059182&id=15269823200&first=1000`);
+	const data = await fetch(
+		`https://www.instagram.com/graphql/query/?query_id=17888483320059182&id=15269823200&first=1000`
+	);
 	const contentType = data.headers.get("content-type");
 	const array = [];
 
@@ -67,10 +73,10 @@ app.get("/instagram", async (req, res) => {
 			if (err) throw err;
 			console.log("fichier mis a jour");
 		});
-		res.json(backup[0].data.user.edge_owner_to_timeline_media).status(200);
+		res.json(array[0].data.user.edge_owner_to_timeline_media).status(200);
 	} else {
 		res.json(backup[0].data.user.edge_owner_to_timeline_media).status(200);
 	}
 });
 
-app.listen(PORT, () => console.log(`listening on port ${PORT}`)); 
+app.listen(PORT, () => console.log(`listening on port ${PORT}`));
