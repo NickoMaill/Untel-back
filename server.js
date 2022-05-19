@@ -7,7 +7,7 @@ require("dotenv").config({
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const fetch = require("node-fetch");
-const fs = require("fs")
+const fs = require("fs");
 
 //ROUTE IMPORT
 const gigDatesRoutes = require("./routes/gigRoute");
@@ -33,8 +33,6 @@ app.use("/gig_dates", gigDatesRoutes);
 app.use("/admin", adminRoute);
 app.use("/albums", albumRoutes);
 app.use("/orders", ordersRoutes);
-
-// console.log(isNaN(parseFloat("12.2")));
 
 app.get("/", async (_req, res) => {
 	const gigs = await Postgres.query("SELECT * FROM gig_dates");
@@ -77,6 +75,10 @@ app.get("/instagram", async (req, res) => {
 	} else {
 		res.json(backup[0].data.user.edge_owner_to_timeline_media).status(200);
 	}
+});
+
+app.get("*", (_req, res) => {
+	res.status(404).send("Error 404, this page does not exists");
 });
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));

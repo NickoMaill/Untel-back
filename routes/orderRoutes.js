@@ -6,7 +6,6 @@ const { v4: uuidv4 } = require("uuid");
 const currentDate = require("../utils/getCurrentDate");
 
 route.post("/", async (req, res) => {
-    console.log(req.body.nameItem);
 	const formatName = req.body.nameItem.toLowerCase().replace(/ /g, "-");
 	try {
 		await Postgres.query(

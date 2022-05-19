@@ -3,7 +3,6 @@ const route = express.Router();
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { v4: uuidv4 } = require("uuid");
-const currentDate = require("../utils/getCurrentDate");
 
 route.get("/", async (_req, res) => {
 	const gigDate = await Postgres.query("SELECT * FROM gig_dates");
@@ -36,7 +35,7 @@ route.post("/add", async (req, res) => {
 				req.body.country,
 				req.body.date,
 				req.body.event_link,
-				currentDate("full"),
+				new Date(),
 			]
 		);
 		res.status(201).json({
@@ -56,7 +55,7 @@ route.post("/add", async (req, res) => {
 route.put("/update-gig/:id", async (req, res) => {
 	try {
 		await Postgres.query(
-			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, uppdated_at = $7 WHERE event_id = $8",
+			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, updated_at = $7 WHERE event_id = $8",
 			[
 				req.body.place,
 				req.body.city,
@@ -64,7 +63,7 @@ route.put("/update-gig/:id", async (req, res) => {
 				req.body.date,
 				req.body.eventLink,
 				req.body.isCanceled,
-				currentDate("date"),
+				new Date(),
 				req.params.id,
 			]
 		);
