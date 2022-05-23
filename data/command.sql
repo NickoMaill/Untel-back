@@ -3,6 +3,9 @@ ALTER TABLE albums ADD COLUMN track_list JSON[];
 ALTER TABLE albums ADD COLUMN shop_link VARCHAR(100);
 ALTER TABLE albums ADD COLUMN added_at VARCHAR(50);
 ALTER TABLE albums ADD COLUMN updated_at VARCHAR(50);
+ALTER TABLE albums ADD COLUMN shop_link VARCHAR(100);
+ALTER TABLE albums ADD COLUMN stream_links JSON;
+ALTER TABLE orders ADD COLUMN address JSON;
 
 CREATE TABLE orders (
     order_id VARCHAR(50) UNIQUE PRIMARY KEY NOT NULL,
@@ -11,6 +14,7 @@ CREATE TABLE orders (
     client_firstName VARCHAR(50),
     client_lastName VARCHAR(50),
     client_email VARCHAR(50),
+	address JSON;
     city VARCHAR(50),
     country VARCHAR(50),
     amount FLOAT,
@@ -51,7 +55,7 @@ CREATE TABLE albums (
 	color VARCHAR(50) NOT NULL,
 	is_released BOOLEAN DEFAULT FALSE,
     price INTEGER FLOAT DEFAULT 10,
-    shop_link VARCHAR(100),
+    shop_link JSON,
     added_at VARCHAR(50) NOT NULL,
     updated_at VARCHAR(50) NOT NULL
 );
@@ -64,7 +68,7 @@ CREATE TABLE media(
     is_video BOOLEAN DEFAULT NULL,
     added_at VARCHAR(50)
 );
-
+SELECT * FROM orders ORDER BY date_of_order DESC
 -- DELETE FROM albums WHERE album_id = '4839369a-a99d-4b3a-9c32-594e8a2a777a'
 
 -- ALTER TABLE albums ADD COLUMN is_released BOOLEAN

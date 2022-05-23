@@ -7,7 +7,9 @@ require("dotenv").config({
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const fetch = require("node-fetch");
+const handlebars = require("express-handlebars");
 const fs = require("fs");
+const path = require("path");
 
 //ROUTE IMPORT
 const gigDatesRoutes = require("./routes/gigRoute");
@@ -26,13 +28,21 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cors);
 app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "/public")))
 app.use(express.urlencoded({ extended: true }));
+
+app.engine("handlebars", handlebars.engine());
+app.set("view engine", "handlebars");
 
 //ROUTES INIT
 app.use("/gig_dates", gigDatesRoutes);
 app.use("/admin", adminRoute);
 app.use("/albums", albumRoutes);
 app.use("/orders", ordersRoutes);
+
+app.get("/test", (req, res) => {
+	res.render("confirmationOrder")
+})
 
 app.get("/", async (_req, res) => {
 	const gigs = await Postgres.query("SELECT * FROM gig_dates");

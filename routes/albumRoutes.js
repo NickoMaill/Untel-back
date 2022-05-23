@@ -8,9 +8,10 @@ const upload = multer({ dest: "public/uploads/albumCovers" });
 const fs = require("fs");
 const path = require("path");
 const currentDate = require("../utils/getCurrentDate");
+const formatDate = require("../utils/formatDate");
 
 route.get("/all", async (_req, res) => {
-	const albums = await Postgres.query("SELECT * FROM albums ORDER BY year DESC");
+	const albums = await Postgres.query("SELECT * FROM albums ORDER BY release_date DESC");
 	try {
 		albums;
 		res.status(200).json({
@@ -49,12 +50,12 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 
 	try {
 		await Postgres.query(
-			"INSERT INTO albums (album_id, title, subtitle, year, description, playlist_link, video_link, photo_path, color, is_released, price, track_list, shop_link, added_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)",
+			"INSERT INTO albums (album_id, title, subtitle, release_date, description, playlist_link, video_link, photo_path, color, is_released, price, track_list, shop_link, stream_links, added_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
 			[
 				uuidv4(),
 				req.body.title,
 				req.body.subtitle,
-				req.body.year,
+			 	formatDate(req.body.releaseDate),
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
@@ -64,6 +65,7 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 				parseFloat(req.body.price),
 				req.body.setList,
 				req.body.shopLink,
+				req.body.streamLinks,
 				new Date()
 			]
 		);
@@ -106,11 +108,11 @@ route.put("/update-album/:id", upload.single("image"), async (req, res) => {
 
 	try {
 		await Postgres.query(
-			"UPDATE albums SET title = $1, subtitle = $2, year = $3, description = $4, playlist_link = $5, video_link = $6, photo_path = $7, color = $8, is_released = $9, price = $10, track_list = $11, updated_at = $12 WHERE album_id = $13",
+			"UPDATE albums SET title = $1, subtitle = $2, release_date = $3, description = $4, playlist_link = $5, video_link = $6, photo_path = $7, color = $8, is_released = $9, price = $10, track_list = $11, shop_link = $12, stream_links = $13, updated_at = $14 WHERE album_id = $15",
 			[
 				req.body.title,
 				req.body.subtitle,
-				req.body.year,
+				formatDate(req.body.releaseDate),
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
@@ -120,6 +122,7 @@ route.put("/update-album/:id", upload.single("image"), async (req, res) => {
 				parseFloat(req.body.price),
 				req.body.setList,
 				req.body.shopLink,
+				req.body.streamLinks,
 				new Date(),
 				req.params.id,
 			]
