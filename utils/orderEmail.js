@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
 const { dirname } = require("path");
 const path = require("path");
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer");
 
 const { SERVICE_MAIL, USER_MAIL, PASSWORD_MAIL } = process.env;
 
@@ -24,7 +24,19 @@ const hbsOptions = {
 
 transporter.use("compile", hbs(hbsOptions));
 
-const sendOrderMail = (to, firstName, orderId) => {
+const sendOrderMail = (
+	to,
+	firstName,
+	orderId,
+	address,
+	clientEmail,
+	orderDate,
+	nameItem,
+	price,
+	subTotal,
+	tva,
+	total
+) => {
 	const mailInfo = {
 		from: USER_MAIL,
 		to,
@@ -33,14 +45,14 @@ const sendOrderMail = (to, firstName, orderId) => {
 		context: {
 			orderId,
 			clientName: firstName,
-            address,
-            clientEmail,
-            orderDate,
-            nameItem,
-            price,
-            subTotal,
-            tva,
-            total,
+			address,
+			clientEmail,
+			orderDate,
+			nameItem,
+			price,
+			subTotal,
+			tva,
+			total,
 		},
 	};
 	transporter.verify((err, success) => {

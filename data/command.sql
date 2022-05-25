@@ -6,6 +6,7 @@ ALTER TABLE albums ADD COLUMN updated_at VARCHAR(50);
 ALTER TABLE albums ADD COLUMN shop_link VARCHAR(100);
 ALTER TABLE albums ADD COLUMN stream_links JSON;
 ALTER TABLE orders ADD COLUMN address JSON;
+ALTER TABLE gig_dates ADD COLUMN address VARCHAR(100)
 
 CREATE TABLE orders (
     order_id VARCHAR(50) UNIQUE PRIMARY KEY NOT NULL,
@@ -69,6 +70,9 @@ CREATE TABLE media(
     added_at VARCHAR(50)
 );
 SELECT * FROM orders ORDER BY date_of_order DESC
+
+UPDATE gig_dates SET address = 'Face Au 55 Quai de la Seine' WHERE event_id = 'fc6c007a-4903-48bd-95d0-5aa24fd07138'
+
 -- DELETE FROM albums WHERE album_id = '4839369a-a99d-4b3a-9c32-594e8a2a777a'
 
 -- ALTER TABLE albums ADD COLUMN is_released BOOLEAN
