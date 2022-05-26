@@ -1,6 +1,6 @@
 const NodeCache = require("node-cache");
 
-const cache = new NodeCache({ stdTTL: 600, checkperiod: 600  });
+const cache = new NodeCache({ stdTTL: 43200, checkperiod: 600  });
 
 const duration = (req, res, next) => {
 	if (req.method !== "GET") {

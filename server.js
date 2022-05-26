@@ -17,7 +17,7 @@ const apiLimiter = limiter({
 	max: 1,
 	standardHeaders: true,
 	legacyHeaders:false,
-	handler: (req, res, next, options) => {
+	handler: (_req, res, next,_options) => {
 		res.status(429)
 		next()
 	}
@@ -44,7 +44,7 @@ app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
 app.use('/instagram', apiLimiter)
-// app.use(duration)
+app.use(duration)
 
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
@@ -82,24 +82,23 @@ app.get("/", async (_req, res) => {
 	}
 });
 
-app.get("/instagram", apiLimiter, async (req, res) => {
-	console.log(res.statusCode);
+app.get("/instagram", apiLimiter, async (_req, res) => {
 	const data = await fetch(
-		`https://instagram28.p.rapidapi.com/medias?user_id=15269823200&batch_size=92&rapidapi-key=${process.env.INSTAKEY}`
+		`https://instagram28.p.rapidapi.com/medias?user_id=15269823200&batch_size=50&rapidapi-key=${process.env.INSTAKEY}`
 	);
 	const response = await data.json();
 
-	if (res.statusCode === 429) {
-		console.log("request ok");
+	if (res.statusCode === 429 || data.status === 429) {
+		console.log("JSON file rendered");
 		res.status(200).json(backup[0].data.user.edge_owner_to_timeline_media);
 	} else {
 		const array = [];
 		array.push(response);
 		fs.writeFile("./data/post.json", JSON.stringify(array), "utf-8", (err) => {
 			if (err) throw err;
-			console.log("fichier mis a jour");
+			console.log("file success update");
 		});
-		res.status(200).json(array[0].data.user.edge_owner_to_timeline_media);
+		res.status(200).json(array);
 	}
 });
 

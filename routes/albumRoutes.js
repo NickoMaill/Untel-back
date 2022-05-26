@@ -9,6 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const currentDate = require("../utils/getCurrentDate");
 const formatDate = require("../utils/formatDate");
+const logColors = require("../utils/logColors")
 
 route.get("/all", async (_req, res) => {
 	const albums = await Postgres.query("SELECT * FROM albums ORDER BY release_date DESC");
@@ -18,6 +19,7 @@ route.get("/all", async (_req, res) => {
 			success: true,
 			albums: albums.rows,
 		});
+		console.log(logColors.FgGreen,`All albums successfully fetched`);
 	} catch (err) {
 		console.error(err);
 		res.json({
@@ -35,6 +37,7 @@ route.get("/:id", async (req, res) => {
 			success: true,
 			album: album.rows,
 		});
+		console.log(logColors.FgGreen,`Album ${album.rows[0].title} successfully fetched`);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
@@ -74,6 +77,7 @@ route.post("/add-album", upload.single("image"), async (req, res) => {
 			success: true,
 			message: "album added",
 		});
+		console.log(logColors.FgGreen,`Album ${req.body.title} successfully added`);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
@@ -112,7 +116,7 @@ route.put("/update-album/:id", upload.single("image"), async (req, res) => {
 			[
 				req.body.title,
 				req.body.subtitle,
-				formatDate(req.body.releaseDate),
+				req.body.releaseDate,
 				req.body.description,
 				req.body.playlistLink,
 				req.body.videoLink,
@@ -135,6 +139,7 @@ route.put("/update-album/:id", upload.single("image"), async (req, res) => {
 			success: true,
 			message: "album updated",
 		});
+		console.log(logColors.FgGreen,`Album ${req.body.title} successfully updated`);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
@@ -151,6 +156,7 @@ route.delete("/delete/:id", async (req, res) => {
 			success: true,
 			message: "album deleted",
 		});
+		console.log(logColors.FgYellow, `Album ${req.params.id}'s successfully deleted`);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
