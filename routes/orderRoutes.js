@@ -61,7 +61,17 @@ route.post("/add-order", async (req, res) => {
 				req.body.address,
 			]
 		);
-		sendOrderMail("nicomaillols@gmail.com", req.body.clientFirstName, req.body.id);
+		sendOrderMail(
+			"nicomaillols@gmail.com",
+			req.body.clientFirstName,
+			req.body.clientLastName,
+			req.body.id,
+			req.body.address,
+			req.body.clientEmail, 
+			currentDate("order"),
+			formatName,
+			req.body.amount,
+		);
 		res.status(201).json({
 			success: true,
 			message: "order added",

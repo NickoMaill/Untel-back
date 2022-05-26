@@ -11,9 +11,9 @@
 	</div>
 	<div id="project">
 		<div><span>CLIENT</span>{{{clientName}}}</div>
-		<div><span>ADDRESS</span>{{{address}}}</div>
+		<div><span>ADDRESS</span>{{{address}}}<br/>{{{city}}}</div>
 		<div><span>EMAIL</span> <a href="mailto:{{{clientEmail}}}">{{{clientEmail}}}</a></div>
-		<div><span>DATE</span>{{{orderDAte}}}</div>
+		<div><span>DATE</span>{{{orderDate}}}</div>
 	</div>
 </header>
 <main>
@@ -22,30 +22,30 @@
 			<tr>
 				<th class="service">PRODUIT</th>
 				<th class="desc">DESCRIPTION</th>
-				<th>PRIX</th>
+				<th>PRIX HT</th>
 				<th>QTE</th>
-				<th>TOTAL</th>
+				<th>TOTAL HT</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td class="service">{{{nameItem}}}</td>
 				<td class="desc">CD audio de l'album {{{nameItem}}} de l'artiste Untel</td>
-				<td class="unit">{{{price}}}</td>
+				<td class="unit">{{{price}}} €</td>
 				<td class="qty">1</td>
-				<td class="total">{{{price}}}</td>
+				<td class="total">{{{price}}} €</td>
 			</tr>
 			<tr>
-				<td colspan="4">SUBTOTAL</td>
-				<td class="total">{{{subTotal}}}</td>
+				<td colspan="4">SOUS-TOTAL</td>
+				<td class="total">{{{subTotal}}} €</td>
 			</tr>
 			<tr>
-				<td colspan="4">TAX 25%</td>
-				<td class="total">{{{tva}}}</td>
+				<td colspan="4">TAX 20%</td>
+				<td class="total">{{{tva}}} €</td>
 			</tr>
 			<tr>
-				<td colspan="4" class="grand total">GRAND TOTAL</td>
-				<td class="grand total">{{{total}}}</td>
+				<td colspan="4" class="grand total">TOTAL TTC</td>
+				<td class="grand total">{{{total}}} €</td>
 			</tr>
 		</tbody>
 	</table>

@@ -10,6 +10,18 @@ const fetch = require("node-fetch");
 const handlebars = require("express-handlebars");
 const fs = require("fs");
 const path = require("path");
+const limiter = require("express-rate-limit");
+
+const apiLimiter = limiter({
+	windowMs: 120 * 60 * 1000, 
+	max: 1,
+	standardHeaders: true,
+	legacyHeaders:false,
+	handler: (req, res, next, options) => {
+		res.status(429)
+		next()
+	}
+})
 
 //ROUTE IMPORT
 const gigDatesRoutes = require("./routes/gigRoute");
@@ -20,6 +32,7 @@ const backup = require("./data/post.json");
 
 //MIDDLEWARES
 const cors = require("./middlewares/cors");
+const duration = require("./middlewares/cachingRoutes");
 
 //PORT CONST
 const PORT = process.env.PORT || 8000;
@@ -28,8 +41,10 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cors);
 app.use(express.static("public"));
-app.use(express.static(path.join(__dirname, "/public")))
+app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
+app.use('/instagram', apiLimiter)
+// app.use(duration)
 
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
@@ -40,9 +55,9 @@ app.use("/admin", adminRoute);
 app.use("/albums", albumRoutes);
 app.use("/orders", ordersRoutes);
 
-app.get("/test", (req, res) => {
-	res.render("confirmationOrder")
-})
+// app.get("/test", (req, res) => {
+// 	res.render("confirmationOrder");
+// });
 
 app.get("/", async (_req, res) => {
 	const gigs = await Postgres.query("SELECT * FROM gig_dates");
@@ -67,23 +82,24 @@ app.get("/", async (_req, res) => {
 	}
 });
 
-app.get("/instagram", async (req, res) => {
+app.get("/instagram", apiLimiter, async (req, res) => {
+	console.log(res.statusCode);
 	const data = await fetch(
-		`https://www.instagram.com/graphql/query/?query_id=17888483320059182&id=15269823200&first=1000`
+		`https://instagram28.p.rapidapi.com/medias?user_id=15269823200&batch_size=92&rapidapi-key=${process.env.INSTAKEY}`
 	);
-	const contentType = data.headers.get("content-type");
-	const array = [];
+	const response = await data.json();
 
-	if (contentType && contentType.indexOf("application/json") !== -1) {
-		const response = await data.json();
+	if (res.statusCode === 429) {
+		console.log("request ok");
+		res.status(200).json(backup[0].data.user.edge_owner_to_timeline_media);
+	} else {
+		const array = [];
 		array.push(response);
 		fs.writeFile("./data/post.json", JSON.stringify(array), "utf-8", (err) => {
 			if (err) throw err;
 			console.log("fichier mis a jour");
 		});
-		res.json(array[0].data.user.edge_owner_to_timeline_media).status(200);
-	} else {
-		res.json(backup[0].data.user.edge_owner_to_timeline_media).status(200);
+		res.status(200).json(array[0].data.user.edge_owner_to_timeline_media);
 	}
 });
 
