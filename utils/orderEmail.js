@@ -2,7 +2,6 @@ const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
 const { dirname } = require("path");
 const path = require("path");
-const puppeteer = require("puppeteer");
 
 const { SERVICE_MAIL, USER_MAIL, PASSWORD_MAIL } = process.env;
 
