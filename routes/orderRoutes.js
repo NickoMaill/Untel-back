@@ -3,10 +3,11 @@ const express = require("express");
 const route = express.Router();
 
 //CONTROLLERS IMPORTS
-const { allOrders, orderById, addOrder } = require("../controllers/orderRoutesControllers");
+const { allOrders, orderById, addOrder, queryOrder } = require("../controllers/orderRoutesControllers");
 
-route.get("/all", allOrders);
-route.get("/:id", orderById);
+route.get("/", allOrders);
+route.get("/id/:id", orderById);
+route.get("/query", queryOrder);
 route.post("/add-order", addOrder);
 
 module.exports = route;

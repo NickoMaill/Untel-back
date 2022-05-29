@@ -50,9 +50,9 @@ app.get("/instagram", apiLimiter, instagram);
 
 // GUARD IF ERROR ON URL
 app.get("*", (_req, res) => {
-	res.status(404).json({ 
-		success: false, 
-		message: "Error 404, this page does not exists" 
+	res.status(404).json({
+		success: false,
+		message: "Error 404, this page does not exists",
 	});
 });
 

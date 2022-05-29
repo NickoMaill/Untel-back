@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 // GET ALL GIGS DATA
 
 const allGigs = async (_req, res) => {
-	const gigDate = await Postgres.query("SELECT * FROM gig_dates");
+	const gigDate = await Postgres.query("SELECT * FROM orders ORDER BY date_of_order ASC");
 
 	try {
 		gigDate;
@@ -29,8 +29,8 @@ const allGigs = async (_req, res) => {
 const addGig = async (req, res) => {
 	try {
 		await Postgres.query(
-			"INSERT INTO gig_dates (event_id, place, city, country, date, event_link, added_at) VALUES($1, $2, $3, $4, $5, $6, $7)",
-			[uuidv4(), req.body.place, req.body.city, req.body.country, req.body.date, req.body.event_link, new Date()]
+			"INSERT INTO gig_dates (event_id, place, city, country, date, event_link, added_at, address) VALUES($1, $2, $3, $4, $5, $6, $7, $8)",
+			[uuidv4(), req.body.place, req.body.city, req.body.country, req.body.date, req.body.eventLink, new Date(), req.body.address,]
 		);
 		res.status(201).json({
 			success: true,
@@ -50,7 +50,7 @@ const addGig = async (req, res) => {
 const updateGig = async (req, res) => {
 	try {
 		await Postgres.query(
-			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, updated_at = $7 WHERE event_id = $8",
+			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, updated_at = $7, address = $8 WHERE event_id = $9",
 			[
 				req.body.place,
 				req.body.city,
@@ -59,6 +59,7 @@ const updateGig = async (req, res) => {
 				req.body.eventLink,
 				req.body.isCanceled,
 				new Date(),
+				req.body.address,
 				req.params.id,
 			]
 		);

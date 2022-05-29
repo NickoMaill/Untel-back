@@ -13,6 +13,7 @@ const allOrders = async (_req, res) => {
 		orders;
 		res.status(200).json({
 			success: true,
+			ordersCount: orders.rowCount,
 			orders: orders.rows,
 		});
 	} catch (err) {
@@ -43,16 +44,119 @@ const orderById = async (req, res) => {
 	}
 };
 
+// SEARCH ORDER BY QUERY
+const queryOrder = async (req, res) => {
+	console.log("hello");
+	const query = req.query;
+	const queryLength = Object.keys(req.query).length;
+	const orders = await Postgres.query("SELECT * FROM orders ORDER BY date_of_order DESC");
+
+	try {
+		if (queryLength < 1) {
+			orders;
+			res.status(200).json({
+				success: true,
+				ordersCount: orders.rowCount,
+				orders: orders.rows,
+			});
+		} else {
+			let sqlString = "";
+			let formatQuery = "";
+			let formatQueryKeys = "";
+
+			for (queryKeys in query) {
+				formatQueryKeys = queryKeys;
+
+				if (queryKeys === "address") {
+					formatQueryKeys = "address ->> 'address_line_1'";
+				}
+
+				if (queryKeys === "district") {
+					formatQueryKeys = "address ->> 'admin_area_1'";
+				}
+
+				if (queryKeys === "day") {
+					formatQueryKeys = `date_of_order ILIKE`;
+					formatQuery = `'________${query[queryKeys]}%'`;
+				}
+
+				if (queryKeys === "month") {
+					formatQueryKeys = `date_of_order ILIKE`;
+					formatQuery = `'_____${query[queryKeys]}%'`;
+				}
+
+				if (queryKeys === "year") {
+					formatQueryKeys = `date_of_order ILIKE`;
+					formatQuery = `'${query[queryKeys]}%'`;
+				}
+
+				if (queryKeys === "date-interval") {
+					formatQueryKeys = `date_of_order`;
+					formatQuery = `${query[queryKeys]}`;
+				}
+
+				if (isNaN(query[queryKeys]) === true) {
+					if (queryKeys === "date-interval") {
+						(sqlString +=
+							formatQueryKeys +
+							" >= " +
+							"'" +
+							formatQuery.substring(0, 10) +
+							"'" +
+							" AND " +
+							formatQueryKeys +
+							" < " +
+							"'" +
+							formatQuery.substring(13, formatQuery.length) +
+							"'" +
+							" AND ");
+					} else {
+						formatQuery = `'${query[queryKeys]}'`;
+						sqlString += formatQueryKeys.toLocaleLowerCase() + " = " + formatQuery + " AND ";
+					}
+				} else {
+					if (queryKeys === "day" || queryKeys === "month" || queryKeys === "year") {
+						sqlString += formatQueryKeys + " " + formatQuery + " AND ";
+					} else {
+						formatQuery = query[queryKeys];
+						sqlString += formatQueryKeys.toLocaleLowerCase() + " = " + formatQuery + " AND ";
+					}
+
+				}
+				console.log(queryKeys);
+			}
+			sqlString = sqlString.substring(0, sqlString.length - 4);
+			console.log(sqlString);
+
+			const filteredClient = await Postgres.query(
+				`SELECT * FROM orders WHERE ${sqlString} ORDER BY date_of_order DESC`
+			);
+
+			res.json({
+				success: true,
+				ordersCount: filteredClient.rowCount,
+				orders: filteredClient.rows,
+			});
+		}
+	} catch (err) {
+		console.error(err);
+		res.status(400).json({
+			success: false,
+			message: "an error happened while charging orders",
+		});
+	}
+};
+
 // ADD AN ORDER TO THE DB
 const addOrder = async (req, res) => {
-	const formatName = req.body.nameItem.toLowerCase().replace(/ /g, "-");
+	// const formatName = req.body.nameItem.toLowerCase().replace(/ /g, "-");
 	try {
 		await Postgres.query(
 			"INSERT INTO orders (order_id, item_id, name_item, client_firstName, client_lastName, client_email, city, country, amount, currency, date_of_order, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
 			[
 				req.body.id,
 				req.body.itemId,
-				formatName,
+				req.body.nameItem,
 				req.body.clientFirstName,
 				req.body.clientLastName,
 				req.body.clientEmail,
@@ -72,7 +176,7 @@ const addOrder = async (req, res) => {
 			req.body.address,
 			req.body.clientEmail,
 			currentDate("order"),
-			formatName,
+			req.body.nameItem,
 			req.body.amount
 		);
 		res.status(201).json({
@@ -89,4 +193,4 @@ const addOrder = async (req, res) => {
 	}
 };
 
-module.exports = { allOrders, orderById, addOrder };
+module.exports = { allOrders, orderById, queryOrder, addOrder };

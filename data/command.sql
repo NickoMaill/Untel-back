@@ -6,21 +6,21 @@ ALTER TABLE albums ADD COLUMN updated_at VARCHAR(50);
 ALTER TABLE albums ADD COLUMN shop_link VARCHAR(100);
 ALTER TABLE albums ADD COLUMN stream_links JSON;
 ALTER TABLE orders ADD COLUMN address JSON;
-ALTER TABLE gig_dates ADD COLUMN address VARCHAR(100)
+ALTER TABLE gig_dates ADD COLUMN address VARCHAR(100);
 
 CREATE TABLE orders (
     order_id VARCHAR(50) UNIQUE PRIMARY KEY NOT NULL,
+	date_of_order VARCHAR(50) NOT NULL,
     item_id VARCHAR(50) NOT NULL,
     name_item VARCHAR(50) NOT NULL,
+	amount FLOAT,
+    currency VARCHAR(50),
     client_firstName VARCHAR(50),
     client_lastName VARCHAR(50),
     client_email VARCHAR(50),
 	address JSON;
     city VARCHAR(50),
     country VARCHAR(50),
-    amount FLOAT,
-    currency VARCHAR(50),
-    date_of_order VARCHAR(50) NOT NULL,
     CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES albums(album_id)
 );
 
@@ -69,9 +69,15 @@ CREATE TABLE media(
     is_video BOOLEAN DEFAULT NULL,
     added_at VARCHAR(50)
 );
-SELECT * FROM orders ORDER BY date_of_order DESC
+SELECT * FROM orders ORDER BY date_of_order ASC;
+SELECT * FROM gig_dates;
+SELECT * FROM orders WHERE date_of_order ILIKE '%________23%'
+DELETE FROM gig_dates WHERE event_id = 'a4ff3c81-8a32-49d1-ab61-3ffce5c55faf';
+UPDATE orders SET date_of_order = '2022-04-26_23:20:03' WHERE order_id = '0GK32026NS877635D'
 
-UPDATE gig_dates SET address = 'Face Au 55 Quai de la Seine' WHERE event_id = 'fc6c007a-4903-48bd-95d0-5aa24fd07138'
+UPDATE gig_dates SET event_link = 'https://www.facebook.com/events/395706215394549' WHERE event_id = 'fc6c007a-4903-48bd-95d0-5aa24fd07138';
+
+
 
 -- DELETE FROM albums WHERE album_id = '4839369a-a99d-4b3a-9c32-594e8a2a777a'
 
