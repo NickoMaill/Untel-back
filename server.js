@@ -14,24 +14,24 @@ const albumRoutes = require("./routes/albumRoutes");
 const ordersRoutes = require("./routes/orderRoutes");
 
 //CONTROLLER IMPORTS
-const { instagram, allData } = require("./controllers/apis");
 
 //MIDDLEWARES
-const cors = require("./middlewares/cors");
+const cors = require("cors")
 const duration = require("./middlewares/cachingRoutes");
 const apiLimiter = require("./middlewares/instaLimiter");
+const { instagram, allData } = require("./controllers/apis");
 
 //PORT CONST
 const PORT = process.env.PORT || 8000;
 
 //FUNCTION USED FOR EACH REQUEST
 app.use(express.json());
-app.use(cors);
+app.use(cors());
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
-app.use(duration);
-// app.use("/instagram", apiLimiter);
+// app.use(duration);
+app.use("/instagram", apiLimiter);
 
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
@@ -46,7 +46,7 @@ app.use("/orders", ordersRoutes);
 app.get("/", allData);
 
 // GET INSTAGRAM POST
-app.get("/instagram", apiLimiter, instagram);
+app.get("/instagram", instagram);
 
 // GUARD IF ERROR ON URL
 app.get("*", (_req, res) => {

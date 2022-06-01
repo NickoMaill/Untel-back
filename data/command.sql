@@ -70,10 +70,14 @@ CREATE TABLE media(
     added_at VARCHAR(50)
 );
 SELECT * FROM orders ORDER BY date_of_order ASC;
-SELECT * FROM gig_dates;
-SELECT * FROM orders WHERE date_of_order ILIKE '%________23%'
+SELECT * FROM gig_dates ORDER BY date DESC;
+SELECT * FROM orders WHERE date_of_order ILIKE '2022-04-27%'
+SELECT * FROM orders WHERE address ->> 'admin_area_1' = 'Alsace' AND amount = 1 AND date_of_order ILIKE '________23%'
+SELECT * FROM orders WHERE date_of_order >= '2022-04-26' AND date_of_order < '2022-04-28' ORDER BY date_of_order ASC;
+SELECT * FROM orders WHERE date_of_order >= '2022-04-22' AND date_of_order < '22-04-25' 
 DELETE FROM gig_dates WHERE event_id = 'a4ff3c81-8a32-49d1-ab61-3ffce5c55faf';
 UPDATE orders SET date_of_order = '2022-04-26_23:20:03' WHERE order_id = '0GK32026NS877635D'
+UPDATE orders SET city = 'paris'
 
 UPDATE gig_dates SET event_link = 'https://www.facebook.com/events/395706215394549' WHERE event_id = 'fc6c007a-4903-48bd-95d0-5aa24fd07138';
 

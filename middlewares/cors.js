@@ -4,11 +4,11 @@ const cors = (req, res, next) => {
 		origin = req.headers.origin;
 		res.setHeader("Access-Control-Allow-Origin", origin);
 	}
-	res.setHeader("X-Powered-By", "Express");
 	res.setHeader("Access-Control-Allow-Credentials", "true");
 	res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-	res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-Width, Content-type, Accept");
-	res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
+	res.setHeader("Access-Control-Expose-Headers", "Content-Length, X-JSON");
+	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, Accept-Language, X-Authorization");
+	res.setHeader("Cache-Control", "s-maxage=86400", "stale-while-revalidate=180");
 	next();
 };
 

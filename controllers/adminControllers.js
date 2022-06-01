@@ -29,8 +29,7 @@ const login = async (req, res) => {
 };
 
 // SEND CONTACT EMAIL --> USED WHEN VISITORS WANTS TO CONTACT US
-const sendContactEmail = (req, res) => {
-	console.log(req.body);
+const sendContactEmail = (_req, res) => {
 	res.status(202).json({
 		success: true,
 		message: "email send",

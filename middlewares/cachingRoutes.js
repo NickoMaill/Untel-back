@@ -1,7 +1,7 @@
 const NodeCache = require("node-cache");
 const { FgYellow, FgGreen, FgRed } = require("../utils/logColors");
 
-const cache = new NodeCache({ stdTTL: 43200, checkperiod: 60  });
+const cache = new NodeCache({ stdTTL: 43200, checkperiod: 10  });
 
 const duration = (req, res, next) => {
 	if (req.method !== "GET") {

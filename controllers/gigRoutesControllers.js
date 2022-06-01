@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 // GET ALL GIGS DATA
 
 const allGigs = async (_req, res) => {
-	const gigDate = await Postgres.query("SELECT * FROM orders ORDER BY date_of_order ASC");
+	const gigDate = await Postgres.query("SELECT * FROM gig_dates ORDER BY date DESC");
 
 	try {
 		gigDate;
@@ -48,6 +48,7 @@ const addGig = async (req, res) => {
 
 //UPDATE A GIG ON THE DB
 const updateGig = async (req, res) => {
+	console.log(req.params.id);
 	try {
 		await Postgres.query(
 			"UPDATE gig_dates SET place = $1, city = $2, country = $3, date = $4, event_link = $5,  is_canceled = $6, updated_at = $7, address = $8 WHERE event_id = $9",
@@ -67,12 +68,14 @@ const updateGig = async (req, res) => {
 			success: true,
 			message: "gig updated",
 		});
+		console.log("gig updated");
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while updating gig data",
 		});
+		console.log("an error happened while updating gig data");
 	}
 }
 

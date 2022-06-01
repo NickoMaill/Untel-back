@@ -5,9 +5,11 @@ const transporter = nodemailer.createTransport({
 	service: SERVICE_MAIL,
 	host: "smtp-mail.outlook.com",
 	secureConnection: false,
+	secure: false,
 	port: 587,
 	tls: {
 		ciphers: "SSLv3",
+		rejectUnauthorized: false,
 	},
 	auth: {
 		user: USER_MAIL,
@@ -43,11 +45,10 @@ function sendEmail(req, res, next) {
 				message: "an error happened",
 			});
 		} else {
+			next();
 			return console.log("email send", info.response);
 		}
 	});
-
-	next();
 }
 
 module.exports = sendEmail;

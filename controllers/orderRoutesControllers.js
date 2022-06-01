@@ -107,7 +107,7 @@ const queryOrder = async (req, res) => {
 							formatQueryKeys +
 							" < " +
 							"'" +
-							formatQuery.substring(13, formatQuery.length) +
+							formatQuery.substring(11, formatQuery.length) +
 							"'" +
 							" AND ");
 					} else {
