@@ -5,6 +5,7 @@ const Underscore = "\x1b[4m";
 const Blink = "\x1b[5m";
 const Reverse = "\x1b[7m";
 const Hidden = "\x1b[8m";
+const Reload = "\x1b[0m";
 const FgBlack = "\x1b[30m";
 const FgRed = "\x1b[31m";
 const FgGreen = "\x1b[32m";
@@ -30,6 +31,7 @@ module.exports = {
 	Blink,
 	Reverse,
 	Hidden,
+	Reload,
 	FgBlack,
 	FgRed,
 	FgGreen,

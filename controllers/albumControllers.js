@@ -9,6 +9,7 @@ const logColors = require("../utils/logColors");
 // UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
 const formatDate = require("../utils/formatDate");
+const { okStatus, errorStatus, forbiddenStatus } = require("../@managers/logManager");
 
 // GET ALL ALBUMS DATA
 const allAlbums = async (_req, res) => {
@@ -19,13 +20,14 @@ const allAlbums = async (_req, res) => {
 			success: true,
 			albums: albums.rows,
 		});
-		console.log(logColors.FgGreen, `All albums successfully fetched`);
+		return okStatus(res.req.method, res.req.url, res.statusCode);
 	} catch (err) {
 		console.error(err);
 		res.json({
 			success: false,
 			message: "an error happened when fetching datas",
 		});
+		return errorStatus(res.req.method, res.req.url, res.statusCode);
 	}
 };
 
@@ -38,13 +40,14 @@ const albumById = async (req, res) => {
 			success: true,
 			album: album.rows,
 		});
-		console.log(logColors.FgGreen, `Album ${album.rows[0].title} successfully fetched`);
+		return okStatus(res.req.method, res.req.url, res.statusCode);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while charging album",
 		});
+		return errorStatus(res.req.method, res.req.url, res.statusCode);
 	}
 };
 
@@ -80,12 +83,14 @@ const addAlbum = async (req, res) => {
 			message: "album added",
 		});
 		console.log(logColors.FgGreen, `Album ${req.body.title} successfully added`);
+		return okStatus(res.req.method, res.req.url, res.statusCode);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened when add an album",
 		});
+		return errorStatus(res.req.method, res.req.url, res.statusCode);
 	}
 };
 
@@ -105,6 +110,7 @@ const updateAlbum = async (req, res) => {
 				success: false,
 				message: "an error happened while updating album data",
 			});
+			return errorStatus(res.req.method, res.req.url, res.statusCode);
 		}
 	} else {
 		type = path.extname(req.file.originalname);
@@ -142,12 +148,14 @@ const updateAlbum = async (req, res) => {
 			message: "album updated",
 		});
 		console.log(logColors.FgGreen, `Album ${req.body.title} successfully updated`);
+		return okStatus(res.req.method, res.req.url, res.statusCode);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while updating album data",
 		});
+		return errorStatus(res.req.method, res.req.url, res.statusCode);
 	}
 };
 
@@ -160,12 +168,14 @@ const deleteAlbum = async (req, res) => {
 			message: "album deleted",
 		});
 		console.log(logColors.FgYellow, `Album ${req.params.id}'s successfully deleted`);
+		return okStatus(res.req.method, res.req.url, res.statusCode);
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while updating album data",
 		});
+		return errorStatus(res.req.method, res.req.url, res.statusCode);
 	}
 }
 
