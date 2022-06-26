@@ -6,5 +6,4 @@ const sendEmail = require("../middlewares/sendEmail");
 route.post("/login", login);
 
 route.post("/send-email", sendEmail, sendContactEmail);
-
 module.exports = route;

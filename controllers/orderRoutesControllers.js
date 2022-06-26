@@ -66,33 +66,38 @@ const queryOrder = async (req, res) => {
 
 			for (queryKeys in query) {
 				formatQueryKeys = queryKeys;
-
-				if (queryKeys === "address") {
-					formatQueryKeys = "address ->> 'address_line_1'";
-				}
-
-				if (queryKeys === "district") {
-					formatQueryKeys = "address ->> 'admin_area_1'";
-				}
-
-				if (queryKeys === "day") {
-					formatQueryKeys = `date_of_order ILIKE`;
-					formatQuery = `'________${query[queryKeys]}%'`;
-				}
-
-				if (queryKeys === "month") {
-					formatQueryKeys = `date_of_order ILIKE`;
-					formatQuery = `'_____${query[queryKeys]}%'`;
-				}
-
-				if (queryKeys === "year") {
-					formatQueryKeys = `date_of_order ILIKE`;
-					formatQuery = `'${query[queryKeys]}%'`;
-				}
-
-				if (queryKeys === "date-interval") {
-					formatQueryKeys = `date_of_order`;
-					formatQuery = `${query[queryKeys]}`;
+				switch (queryKeys) {
+					case "address":
+						formatQueryKeys = "address ->> 'address_line_1'";
+						break;
+					case "district":
+						formatQueryKeys = "address ->> 'admin_area_1'";
+						break;
+					case "day":
+						formatQueryKeys = `date_of_order ILIKE`;
+						formatQuery = `'________${query[queryKeys]}%'`;
+						break;
+					case "month":
+						formatQueryKeys = `date_of_order ILIKE`;
+						formatQuery = `'_____${query[queryKeys]}%'`;
+						break;
+					case "year":
+						formatQueryKeys = `date_of_order ILIKE`;
+						formatQuery = `'${query[queryKeys]}%'`;
+						break;
+					case "date-interval":
+						formatQueryKeys = `date_of_order`;
+						formatQuery = `${query[queryKeys]}`;
+						break;
+					case value:
+						break;
+					case value:
+						break;
+					case value:
+						break;
+				
+					default:
+						break;
 				}
 
 				if (isNaN(query[queryKeys]) === true) {

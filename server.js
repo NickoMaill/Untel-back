@@ -6,6 +6,7 @@ require("dotenv").config({
 });
 const handlebars = require("express-handlebars");
 const path = require("path");
+const listEndPoints = require("express-list-endpoints")
 
 //ROUTE IMPORT
 const gigDatesRoutes = require("./routes/gigRoute");
@@ -16,10 +17,11 @@ const ordersRoutes = require("./routes/orderRoutes");
 //CONTROLLER IMPORTS
 
 //MIDDLEWARES
-const cors = require("cors")
+const cors = require("cors");
 const duration = require("./middlewares/cachingRoutes");
 const apiLimiter = require("./middlewares/instaLimiter");
 const { instagram, allData } = require("./controllers/apis");
+const { BgGreen } = require("./utils/logColors");
 
 //PORT CONST
 const PORT = process.env.PORT || 8000;
@@ -56,5 +58,14 @@ app.get("*", (_req, res) => {
 	});
 });
 
+listEndPoints(app).map((info) => {
+	console.log(`${info.middlewares} - ${info.methods}  ${info.path}`);
+})
 // PORT LISTENING
+console.warn("");
+console.warn("||========================================||");
+console.warn("   Untel Official Website BackEnd startup");
+console.warn("||========================================||");
+console.warn("");
+
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));

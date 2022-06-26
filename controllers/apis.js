@@ -3,7 +3,7 @@ const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const backup = require("../data/post.json");
 const fetch = require("node-fetch");
 const fs = require("fs");
-const req = require("express/lib/request");
+const { BgGreen, FgGreen, FgRed } = require("../utils/logColors");
 
 const allData = async (_req, res) => {
 	const gigs = await Postgres.query("SELECT * FROM gig_dates");
@@ -19,12 +19,15 @@ const allData = async (_req, res) => {
 			albums: albums.rows,
 			albumsCount: albums.rowCount,
 		});
+		console.log(`${res.req.method} '${res.req.url}' successfully requested`, FgGreen, res.statusCode.toString(), '\x1b[0m');
 	} catch (err) {
+		console.error(`${res.req.method} '${res.req.url}' is get an error while requested`, FgRed, res.statusCode.toString(), '\x1b[0m');
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "An error happened when fetching datas",
 		});
+		
 	}
 };
 
@@ -46,7 +49,7 @@ const instagram = async (req, res) => {
 					) {
 						res.status(400).json({
 							success: false,
-							message: "your query is not valid, try number value > 0 or <= 50 ",
+							message: "your query is not valid, try number value up to 0 and down or equal 50 ",
 						});
 					} else {
 					console.log("JSON file rendered");
@@ -58,7 +61,7 @@ const instagram = async (req, res) => {
 					);
 				}
 			} else {
-				res.status(200).json(backup[0].data.user.edge_owner_to_timeline_media.edges);
+				res.status(200).json(backup[0].data.user.edge_owner_to_timeline_media.edges.slice(0, 5));
 			}
 		} else {
 			array.push(response);
