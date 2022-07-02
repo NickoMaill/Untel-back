@@ -14,21 +14,21 @@ const login = async (req, res) => {
 				goodPassword: false,
 				message: "wrong credentials",
 			});
-			return forbiddenStatus(res.req.method, res.req.url, res.statusCode);
+			return
 		}
 		res.status(202).json({
 			success: true,
 			goodPassword: true,
 			message: "access granted",
 		});
-		return okStatus(res.req.method, res.req.url, res.statusCode);
+		return
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened",
 		});
-		return errorStatus(res.req.method, res.req.url, res.statusCode);
+		return
 	}
 };
 
@@ -38,7 +38,7 @@ const ContactEmail = (_req, res) => {
 		success: true,
 		message: "email send",
 	});
-	return okStatus(res.req.method, res.req.url, res.statusCode);
+	return
 };
 
 module.exports = { login, ContactEmail };

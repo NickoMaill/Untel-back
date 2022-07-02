@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "start-unix": "NODE_ENV=development.local nodemon"
   },
   "repository": {
     "type": "git",
@@ -38,12 +39,15 @@
     "express-handlebars": "^6.0.6",
     "express-list-endpoints": "^6.0.0",
     "express-rate-limit": "^6.4.0",
+    "morgan": "^1.10.0",
     "multer": "^1.4.4",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.7",
     "nodemailer": "^6.7.5",
     "nodemailer-express-handlebars": "^5.0.0",
     "pg": "^8.7.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.8.1",
+    "xss": "^1.0.13"
   }
 }
