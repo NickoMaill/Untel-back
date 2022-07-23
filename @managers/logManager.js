@@ -34,17 +34,16 @@ const logger = winston.createLogger({
 	level: "info",
 	format: winston.format.combine(winston.format.timestamp(), logFormat),
 	transports: [
-		new winston.transports.File({ filename: `${logPath}/error.log`, level: "error" }),
 		new winston.transports.File({ filename: `${logPath}/combined.log`, level: "debug" }),
-		new winston.transports.File({ filename: `${logPath}/warn.log`, level: "warn" }),
-		new winston.transports.File({ filename: `${logPath}/info.log`, level: "info" }),
 		new winston.transports.File({ filename: `${logPath}/verbose.log`, level: "verbose" }),
-		new winston.transports.Console({ level: "warn" }),
+		new winston.transports.File({ filename: `${logPath}/info.log`, level: "info" }),
+		new winston.transports.File({ filename: `${logPath}/warn.log`, level: "warn" }),
+		new winston.transports.File({ filename: `${logPath}/error.log`, level: "error" }),
 	],
 });
 
 const debug = (key, message) => {
-	logger.debug("debug", message, { label: key });
+	logger.debug(message, { label: key });
 };
 
 const verbose = (key, message) => {
@@ -52,15 +51,15 @@ const verbose = (key, message) => {
 };
 
 const info = (key, message) => {
-	logger.log("info", message, { label: key });
+	logger.info(message, { label: key });
 };
 
 const warn = (key, message) => {
-	logger.warn("warn", message, { label: key });
+	logger.warn(message, { label: key });
 };
 
 const error = (key, message) => {
-	logger.error("error", message, { label: key });
+	logger.error(message, { label: key });
 };
 
 module.exports = {

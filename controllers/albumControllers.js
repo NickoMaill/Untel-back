@@ -10,7 +10,6 @@ const logManagers = require("../@managers/logManager");
 // UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
 const formatDate = require("../utils/formatDate");
-const { okStatus, errorStatus, forbiddenStatus } = require("../@managers/logManager");
 
 // GET ALL ALBUMS DATA
 const allAlbums = async (_req, res) => {
@@ -21,14 +20,14 @@ const allAlbums = async (_req, res) => {
 			success: true,
 			albums: albums.rows,
 		});
-		return
+		logManagers.info("allAlbums", "All albums correctly fetched");
 	} catch (err) {
 		console.error(err);
 		res.json({
 			success: false,
 			message: "an error happened when fetching datas",
 		});
-		return 
+		logManagers.error("allAlbums", "an error happened when fetching datas");
 	}
 };
 
@@ -41,27 +40,35 @@ const albumById = async (req, res) => {
 			success: true,
 			album: album.rows,
 		});
-		return 
+		logManagers.info("albumById", "Album correctly fetched");
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while charging album",
 		});
-		return 
+		logManagers.error("albumById", "an error happened when fetching datas");
 	}
 };
 
 // ADD AN ALBUM TO THE DB
 const addAlbum = async (req, res) => {
+	if (req.script) {
+		return res.status(403).json({
+			success: false,
+			message: "an error happened",
+		});
+	}
+
 	let type = path.extname(req.file.originalname);
 	let fileName = `${req.body.title.toLowerCase().replace(/ /g, "-")}-${currentDate("date")}${type}`;
+	const id = uuidv4();
 
 	try {
 		await Postgres.query(
 			"INSERT INTO albums (album_id, title, subtitle, release_date, description, playlist_link, video_link, photo_path, color, is_released, price, track_list, shop_link, stream_links, added_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
 			[
-				uuidv4(),
+				id,
 				req.body.title,
 				req.body.subtitle,
 				formatDate(req.body.releaseDate),
@@ -84,26 +91,35 @@ const addAlbum = async (req, res) => {
 			message: "album added",
 		});
 		console.log(logColors.FgGreen, `Album ${req.body.title} successfully added`);
-		return
+		logManagers.verbose(`addAlbum - ${id}`, "album correctly updated");
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
 			success: false,
 			message: "an error happened when add an album",
 		});
-		return
+		logManagers.error(`addAlbum - ${id}`, "an error happened while updating album data");
 	}
 };
 
 // UPDATE AN ALBUM ON THE DB
 const updateAlbum = async (req, res) => {
+	if (req.script) {
+		return res.status(403).json({
+			success: false,
+			message: "an error happened",
+		});
+	}
+
 	let type;
 	let fileName;
 	let imgPath;
 
 	if (!req.file) {
 		try {
-			const photoPath = await Postgres.query("SELECT photo_path FROM albums WHERE album_id = $1", [req.params.id]);
+			const photoPath = await Postgres.query("SELECT photo_path FROM albums WHERE album_id = $1", [
+				req.params.id,
+			]);
 			imgPath = photoPath.rows[0].photo_path;
 		} catch (err) {
 			console.error(err);
@@ -111,7 +127,7 @@ const updateAlbum = async (req, res) => {
 				success: false,
 				message: "an error happened while updating album data",
 			});
-			return
+			return;
 		}
 	} else {
 		type = path.extname(req.file.originalname);
@@ -150,7 +166,7 @@ const updateAlbum = async (req, res) => {
 		});
 		console.log(logColors.FgGreen, `Album ${req.body.title} successfully updated`);
 		logManagers.verbose(`updateAlbum - ${req.params.id}`, "album correctly updated");
-		return
+		return;
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
@@ -178,8 +194,7 @@ const deleteAlbum = async (req, res) => {
 			success: false,
 			message: "an error happened while updating album data",
 		});
-		return
 	}
-}
+};
 
 module.exports = { allAlbums, albumById, addAlbum, updateAlbum, deleteAlbum };

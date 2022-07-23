@@ -27,10 +27,25 @@ const allGigs = async (_req, res) => {
 
 // ADD A GIG TO THE DB
 const addGig = async (req, res) => {
+	if (req.script) {
+		return res.status(403).json({
+			success: false,
+			message: "an error happened",
+		});
+	}
 	try {
 		await Postgres.query(
 			"INSERT INTO gig_dates (event_id, place, city, country, date, event_link, added_at, address) VALUES($1, $2, $3, $4, $5, $6, $7, $8)",
-			[uuidv4(), req.body.place, req.body.city, req.body.country, req.body.date, req.body.eventLink, new Date(), req.body.address,]
+			[
+				uuidv4(),
+				req.body.place,
+				req.body.city,
+				req.body.country,
+				req.body.date,
+				req.body.eventLink,
+				new Date(),
+				req.body.address,
+			]
 		);
 		res.status(201).json({
 			success: true,
@@ -48,6 +63,12 @@ const addGig = async (req, res) => {
 
 //UPDATE A GIG ON THE DB
 const updateGig = async (req, res) => {
+	if (req.script) {
+		return res.status(403).json({
+			success: false,
+			message: "an error happened",
+		});
+	}
 	console.log(req.params.id);
 	try {
 		await Postgres.query(
@@ -77,7 +98,7 @@ const updateGig = async (req, res) => {
 		});
 		console.log("an error happened while updating gig data");
 	}
-}
+};
 
 // DELETE A GIG FROM DB
 const deleteGig = async (req, res) => {
@@ -91,5 +112,5 @@ const deleteGig = async (req, res) => {
 			error: err,
 		});
 	}
-}
+};
 module.exports = { allGigs, addGig, updateGig, deleteGig };

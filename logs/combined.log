@@ -1,31 +1,94 @@
-[2022-07-23T17:29:26.047Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:29:29.645Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:29:29.647Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:30:21.855Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:30:25.166Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:30:25.168Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:30:47.159Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:30:50.754Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:30:50.755Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:31:33.035Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:31:35.427Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:31:35.429Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:31:50.481Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:31:53.751Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:31:53.754Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:32:07.239Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:32:10.105Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:32:10.107Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:35:22.646Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:35:25.495Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:35:25.496Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:43:30.357Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:43:33.693Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:43:33.698Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:43:34.103Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:43:37.125Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:43:37.130Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:52:13.643Z] -- debug -- [firstDataDB] : first data correctly fetched
-[2022-07-23T17:52:16.550Z] -- debug -- [instagram] : data correctly fetched
-[2022-07-23T17:52:16.552Z] -- debug -- [instagram] : file success update
-[2022-07-23T17:52:29.244Z] -- verbose -- [updateAlbum - 1cb06cb7-fa59-4819-a76f-2ae2581464c9] : album correctly updated
+[2022-07-23T19:07:44.312Z] -- info -- [undefined] : info
+[2022-07-23T19:08:15.960Z] -- info -- [allAlbums] : All albums correctly fetched
+[2022-07-23T19:08:22.074Z] -- info -- [allAlbums] : All albums correctly fetched
+[2022-07-23T19:08:31.656Z] -- info -- [AdminLogin] : User correctly logged
+[2022-07-23T19:08:55.839Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T19:08:59.268Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T19:08:59.270Z] -- debug -- [instagram] : file success update
+[2022-07-23T19:09:04.930Z] -- info -- [AdminLogin] : User correctly logged
+[2022-07-23T19:43:30.385Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T19:43:33.747Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T19:43:33.797Z] -- debug -- [instagram] : file success update
+[2022-07-23T19:44:00.407Z] -- warn -- [AdminLogin] : User send wrong credentials
+[2022-07-23T19:45:05.455Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:47:10.551Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:48:19.537Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:49:50.076Z] -- warn -- [AdminLogin] : User send wrong credentials
+[2022-07-23T19:50:01.181Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:50:54.417Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:51:21.116Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:51:33.249Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:53:56.818Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T19:57:08.381Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:00:02.530Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:00:29.545Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:01:12.879Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:02:07.412Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:04:25.002Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:05:24.869Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:06:26.738Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:18:46.420Z] -- warn -- [AdminLogin] : User send wrong credentials
+[2022-07-23T20:19:01.549Z] -- warn -- [AdminLogin] : User send wrong credentials
+[2022-07-23T20:19:51.424Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:19:51.669Z] -- warn -- [AdminLogin] : User send wrong credentials
+[2022-07-23T20:20:32.414Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:20:32.669Z] -- warn -- [AdminLogin] : User send wrong credentials
+[2022-07-23T20:26:47.621Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:28:56.848Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:29:17.423Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:33:53.745Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:34:54.706Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:37:55.962Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T20:39:51.893Z] -- info -- [contactEmail] : Email correctly sended
+[2022-07-23T20:39:52.032Z] -- info -- [ContactEmail] : email correctly send from nicomaillols@gmail.com
+[2022-07-23T20:39:54.961Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T20:39:58.616Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T20:39:58.618Z] -- debug -- [instagram] : file success update
+[2022-07-23T20:41:08.604Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T20:41:11.642Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T20:41:11.643Z] -- debug -- [instagram] : file success update
+[2022-07-23T20:41:32.599Z] -- info -- [contactEmail] : Email correctly sended
+[2022-07-23T20:41:32.699Z] -- info -- [ContactEmail] : email correctly send from nicomaillols@gmail.com
+[2022-07-23T20:41:33.982Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T20:41:37.317Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T20:41:37.321Z] -- debug -- [instagram] : file success update
+[2022-07-23T21:09:23.146Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T21:09:26.561Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T21:09:26.564Z] -- debug -- [instagram] : file success update
+[2022-07-23T21:09:28.464Z] -- info -- [allAlbums] : All albums correctly fetched
+[2022-07-23T21:09:28.536Z] -- info -- [albumById] : Album correctly fetched
+[2022-07-23T21:12:28.269Z] -- info -- [contactEmail] : Email correctly sended
+[2022-07-23T21:12:28.392Z] -- info -- [ContactEmail] : email correctly send from nicomaillols@gmail.com
+[2022-07-23T21:12:30.101Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T21:12:33.255Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T21:12:33.256Z] -- debug -- [instagram] : file success update
+[2022-07-23T21:12:58.390Z] -- info -- [contactEmail] : Email correctly sended
+[2022-07-23T21:12:58.475Z] -- info -- [ContactEmail] : email correctly send from nicomaillols@gmail.com
+[2022-07-23T21:26:41.181Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:30:25.714Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:31:07.658Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:31:56.809Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:33:07.032Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:33:22.272Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:33:23.903Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:33:25.474Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:33:50.626Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:34:10.273Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:37:08.342Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:37:41.403Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:38:54.239Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T21:38:56.853Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T21:38:56.854Z] -- debug -- [instagram] : file success update
+[2022-07-23T21:39:07.608Z] -- info -- [contactEmail] : Email correctly sended
+[2022-07-23T21:39:07.718Z] -- info -- [ContactEmail] : email correctly send from nicomaillols@gmail.com
+[2022-07-23T21:40:33.794Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:41:02.810Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:43:03.245Z] -- warn -- [validBody] : script injection detected
+[2022-07-23T21:45:42.729Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T21:45:46.472Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T21:45:46.472Z] -- debug -- [instagram] : file success update
+[2022-07-23T21:45:54.819Z] -- info -- [contactEmail] : Email correctly sended
+[2022-07-23T21:45:54.907Z] -- info -- [ContactEmail] : email correctly send from nicomaillols@gmail.com
+[2022-07-23T21:46:27.593Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T21:46:27.731Z] -- debug -- [instagram] : get data from backup JSON
+[2022-07-23T21:49:18.405Z] -- warn -- [validBody] : script injection detected

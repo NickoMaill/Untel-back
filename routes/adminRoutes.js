@@ -1,13 +1,12 @@
 const express = require("express");
 const route = express.Router();
 const { login, contactEmail } = require("../controllers/adminControllers");
-const sendEmail = require("../middlewares/sendEmail");
-const { sendContactEmail } = require("../utils/orderEmail");
+const validBody = require("../middlewares/checkBodyInjection");
 
 // LOGIN BACK - OFFICE 
-route.post("/login", login);
+route.post("/login", validBody, login);
 
 // SEND A CONTACT EMAIL
-route.post("/send-email", contactEmail);
+route.post("/send-email", validBody, contactEmail);
 
 module.exports = route;

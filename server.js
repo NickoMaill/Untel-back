@@ -23,7 +23,6 @@ const apiLimiter = require("./middlewares/instaLimiter");
 const { BgGreen, FgYellow, Reload, FgRed, FgMagenta } = require("./utils/logColors");
 const sanitizeXss = require("./middlewares/xss.js");
 const { logger } = require("./@managers/logManager.js");
-// const cors = require("./middlewares/cors.js");
 
 // CONST
 const app = express();

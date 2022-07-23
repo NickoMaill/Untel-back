@@ -149,7 +149,13 @@ const queryOrder = async (req, res) => {
 
 // ADD AN ORDER TO THE DB
 const addOrder = async (req, res) => {
-	// const formatName = req.body.nameItem.toLowerCase().replace(/ /g, "-");
+	if (req.script) {
+		return res.status(403).json({
+			success: false,
+			message: "an error happened",
+		});
+	}
+	
 	try {
 		await Postgres.query(
 			"INSERT INTO orders (order_id, item_id, name_item, client_firstName, client_lastName, client_email, city, country, amount, currency, date_of_order, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
@@ -186,7 +192,13 @@ const addOrder = async (req, res) => {
 const downloadOrder = async (req, res) => {
 	const order = await Postgres.query("SELECT * FROM orders WHERE order_id = $1", [req.params.id]);
 	const orderData = order.rows[0];
-	const doc = new jsPDF({ filters: ["ASCIIHexEncode"], orientation: 'p', unit: "mm", format: "a4", putOnlyUsedFonts: true });
+	const doc = new jsPDF({
+		filters: ["ASCIIHexEncode"],
+		orientation: "p",
+		unit: "mm",
+		format: "a4",
+		putOnlyUsedFonts: true,
+	});
 	moment.locale("fr");
 	doc.setFontSize(12);
 
@@ -221,8 +233,8 @@ const downloadOrder = async (req, res) => {
 	];
 	doc.table(15, 100, data, headerConfig);
 
-	doc.text(["Total TTC"], 15, 140, { align: "left" })
-	doc.text([`${orderData.amount} €`], 192, 140, { align: "right" })
+	doc.text(["Total TTC"], 15, 140, { align: "left" });
+	doc.text([`${orderData.amount} €`], 192, 140, { align: "right" });
 
 	res.type("pdf").send(doc.output());
 };

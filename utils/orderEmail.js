@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const { APP_USER_MAIL, APP_SENDINGBLUE_API_KEY, APP_API_BASE_URL } = process.env;
+const logManagers = require("../@managers/logManager");
 
 const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 	const url = "https://api.sendinblue.com/v3/smtp/email";
@@ -28,8 +29,14 @@ const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 
 	fetch(url, options)
 		.then((res) => res.json())
-		.then((json) => console.log(json))
-		.catch((err) => console.error("error:" + err));
+		.then((json) => {
+			console.log("email send");
+			logManagers.info("sendOrderEmail", `email correctly send from ${email}`);
+		})
+		.catch((err) => {
+			console.error("error:" + err);
+			logManagers.error("sendOrderEmail", `error when sending email from ${email}`);
+		});
 };
 
 const sendContactEmail = (subject, message, email) => {
@@ -59,8 +66,14 @@ const sendContactEmail = (subject, message, email) => {
 
 	fetch(url, options)
 		.then((res) => res.json())
-		.then((json) => console.log(json))
-		.catch((err) => console.error("error:" + err));
+		.then((json) => {
+			console.log("email send");
+			logManagers.info("ContactEmail", `email correctly send from ${email}`);
+		})
+		.catch((err) => {
+			console.error("error:" + err);
+			logManagers.error("sendContactEmail", `error when sending email from ${email}`);
+		});
 };
 
 module.exports = { sendOrderEmail, sendContactEmail };
