@@ -1,63 +1,66 @@
-const nodemailer = require("nodemailer");
-const hbs = require("nodemailer-express-handlebars");
-const { dirname } = require("path");
-const path = require("path");
+const fetch = require("node-fetch");
+const { APP_USER_MAIL, APP_SENDINGBLUE_API_KEY, APP_API_BASE_URL } = process.env;
 
-const { SERVICE_MAIL, USER_MAIL, PASSWORD_MAIL } = process.env;
-
-const transporter = nodemailer.createTransport({
-	service: SERVICE_MAIL,
-	auth: {
-		user: USER_MAIL,
-		pass: PASSWORD_MAIL,
-	},
-});
-
-const hbsOptions = {
-	viewEngine: {
-		layoutsDir: path.resolve(__dirname, "../views/layouts"),
-		partialDir: path.resolve(__dirname, "../views/partials"),
-	},
-	viewPath: path.resolve(__dirname, "../views"),
-};
-
-transporter.use("compile", hbs(hbsOptions));
-
-const sendOrderMail = (to, firstName, lastName, orderId, address, clientEmail, orderDate, nameItem, price) => {
-	const mailInfo = {
-		from: USER_MAIL,
-		to,
-		subject: `confirmation de votre commande n° ${orderId} sur untel-officiel.fr`,
-		template: "confirmationOrder",
-		context: {
-			orderId,
-			clientName: firstName + " " + lastName,
-			address: address.address_line_1,
-			city: address.postal_code + " " + address.admin_area_2 + ", " + address.country_code,
-			clientEmail,
-			orderDate,
-			nameItem,
-			price: Math.floor(price / 1.2),
-			subTotal: Math.floor(price / 1.2),
-			tva: Math.floor(price - price / 1.2),
-			total: price,
+const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
+	const url = "https://api.sendinblue.com/v3/smtp/email";
+	const options = {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			"api-key": APP_SENDINGBLUE_API_KEY,
 		},
+		body: JSON.stringify({
+			sender: { name: "Untel", email: APP_USER_MAIL },
+			to: [{ email: clientEmail, name: clientFirstName }],
+			replyTo: { email: APP_USER_MAIL, name: "Untel" },
+			htmlContent: `
+			<html>
+				<body>
+					<h1>Merci pour votre commande !</h1><br/>
+					<p>ton achat est tès important il permet de soutenir mon activité, comme ça je peux vous preparer du nouveau contenu !</p><br/>
+					<span>tu peux telecharger ta facture en cliquant sur sce lien <a href="${APP_API_BASE_URL}/orders/download-order/${orderId}">${APP_API_BASE_URL}/orders/download-order/${orderId}</a></span> 		
+				</body> 	
+			</html>`,
+			subject: `Merci pour votre commande n° ${orderId}`,
+		}),
 	};
-	transporter.verify((err, success) => {
-		if (err) {
-			return console.error(err);
-		} else {
-			return console.log("Server is ready to take your message", success);
-		}
-	});
 
-	transporter.sendMail(mailInfo, (err, info) => {
-		if (err) {
-			return console.error(err);
-		} else {
-			return console.log("email send", info.response);
-		}
-	});
+	fetch(url, options)
+		.then((res) => res.json())
+		.then((json) => console.log(json))
+		.catch((err) => console.error("error:" + err));
 };
 
-module.exports = sendOrderMail;
+const sendContactEmail = (subject, message, email) => {
+	console.log("enter unction");
+	const url = "https://api.sendinblue.com/v3/smtp/email";
+	const options = {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			"api-key": APP_SENDINGBLUE_API_KEY,
+		},
+		body: JSON.stringify({
+			sender: { name: "Untel", email: APP_USER_MAIL },
+			to: [{ email: APP_USER_MAIL, name: "contact" }],
+			replyTo: { email: APP_USER_MAIL, name: "Untel" },
+			htmlContent: `
+			<html>
+				<body>
+					<p>${message}</p><br/>
+					<span style=''>ce message a été par ${email}</span> 		
+				</body> 	
+			</html>`,
+			subject: subject,
+		}),
+	};
+
+	fetch(url, options)
+		.then((res) => res.json())
+		.then((json) => console.log(json))
+		.catch((err) => console.error("error:" + err));
+};
+
+module.exports = { sendOrderEmail, sendContactEmail };

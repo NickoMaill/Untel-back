@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
 const logColors = require("../utils/logColors");
+const logManagers = require("../@managers/logManager");
 
 // UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
@@ -101,8 +102,8 @@ const updateAlbum = async (req, res) => {
 	let imgPath;
 
 	if (!req.file) {
-		const photoPath = await Postgres.query("SELECT photo_path FROM albums WHERE album_id = $1", [req.params.id]);
 		try {
+			const photoPath = await Postgres.query("SELECT photo_path FROM albums WHERE album_id = $1", [req.params.id]);
 			imgPath = photoPath.rows[0].photo_path;
 		} catch (err) {
 			console.error(err);
@@ -148,6 +149,7 @@ const updateAlbum = async (req, res) => {
 			message: "album updated",
 		});
 		console.log(logColors.FgGreen, `Album ${req.body.title} successfully updated`);
+		logManagers.verbose(`updateAlbum - ${req.params.id}`, "album correctly updated");
 		return
 	} catch (err) {
 		console.error(err);
@@ -155,7 +157,7 @@ const updateAlbum = async (req, res) => {
 			success: false,
 			message: "an error happened while updating album data",
 		});
-		return
+		logManagers.error(`updateAlbum - ${req.params.id}`, "an error happened while updating album data");
 	}
 };
 
@@ -168,9 +170,10 @@ const deleteAlbum = async (req, res) => {
 			message: "album deleted",
 		});
 		console.log(logColors.FgYellow, `Album ${req.params.id}'s successfully deleted`);
-		return
+		logManagers.verbose(`deleteAlbum - ${req.params.id}`, "album correctly updated");
 	} catch (err) {
 		console.error(err);
+		logManagers.error(`deleteAlbum - ${req.params.id}`, "an error happened while updating album data");
 		res.status(400).json({
 			success: false,
 			message: "an error happened while updating album data",

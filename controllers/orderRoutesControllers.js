@@ -1,10 +1,13 @@
 // LIBRARY IMPORTS
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
-
+const { jsPDF } = require("jspdf");
 //UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
 const sendOrderMail = require("../utils/orderEmail");
+const moment = require("moment");
+const { databaseDate } = require("../utils/formatDate");
+const sendOrderEmail = require("../utils/orderEmail");
 
 // GET ALL ORDER FROM DB
 const allOrders = async (_req, res) => {
@@ -89,20 +92,13 @@ const queryOrder = async (req, res) => {
 						formatQueryKeys = `date_of_order`;
 						formatQuery = `${query[queryKeys]}`;
 						break;
-					case value:
-						break;
-					case value:
-						break;
-					case value:
-						break;
-				
 					default:
 						break;
 				}
 
 				if (isNaN(query[queryKeys]) === true) {
 					if (queryKeys === "date-interval") {
-						(sqlString +=
+						sqlString +=
 							formatQueryKeys +
 							" >= " +
 							"'" +
@@ -114,7 +110,7 @@ const queryOrder = async (req, res) => {
 							"'" +
 							formatQuery.substring(11, formatQuery.length) +
 							"'" +
-							" AND ");
+							" AND ";
 					} else {
 						formatQuery = `'${query[queryKeys]}'`;
 						sqlString += formatQueryKeys.toLocaleLowerCase() + " = " + formatQuery + " AND ";
@@ -126,7 +122,6 @@ const queryOrder = async (req, res) => {
 						formatQuery = query[queryKeys];
 						sqlString += formatQueryKeys.toLocaleLowerCase() + " = " + formatQuery + " AND ";
 					}
-
 				}
 				console.log(queryKeys);
 			}
@@ -173,17 +168,7 @@ const addOrder = async (req, res) => {
 				req.body.address,
 			]
 		);
-		sendOrderMail(
-			"nicomaillols@gmail.com",
-			req.body.clientFirstName,
-			req.body.clientLastName,
-			req.body.id,
-			req.body.address,
-			req.body.clientEmail,
-			currentDate("order"),
-			req.body.nameItem,
-			req.body.amount
-		);
+		sendOrderEmail(req.body.id, req.body.clientEmail, req.body.clientFirstName);
 		res.status(201).json({
 			success: true,
 			message: "order added",
@@ -198,4 +183,48 @@ const addOrder = async (req, res) => {
 	}
 };
 
-module.exports = { allOrders, orderById, queryOrder, addOrder };
+const downloadOrder = async (req, res) => {
+	const order = await Postgres.query("SELECT * FROM orders WHERE order_id = $1", [req.params.id]);
+	const orderData = order.rows[0];
+	const doc = new jsPDF({ filters: ["ASCIIHexEncode"], orientation: 'p', unit: "mm", format: "a4", putOnlyUsedFonts: true });
+	moment.locale("fr");
+	doc.setFontSize(12);
+
+	doc.text(["Untel", "59 rue Caulaincourt", "75018 Paris", "France"], 15, 30, { align: "left" });
+	doc.text([`${orderData.client_firstname}`, `${orderData.client_lastname}`], 195, 65, { align: "right" });
+
+	doc.text(["Date de facture", "Numéros de facture"], 15, 80, { align: "left", lineHeightFactor: 2 });
+	doc.text([`${moment(orderData.date_of_order).format("DD MMMM YYYY")}`, `${orderData.order_id}`], 195, 80, {
+		align: "right",
+		lineHeightFactor: 2,
+	});
+
+	let headerConfig = [
+		{
+			name: "description",
+			prompt: "description",
+			width: 210,
+			align: "left",
+			padding: 0,
+		},
+		{
+			name: "prix",
+			prompt: "prix",
+			width: 30,
+			align: "right",
+			padding: 0,
+		},
+	];
+	let data = [
+		{ description: orderData.name_item, prix: `${orderData.amount - 2} €` },
+		{ description: "frais de livraison", prix: `2 €` },
+	];
+	doc.table(15, 100, data, headerConfig);
+
+	doc.text(["Total TTC"], 15, 140, { align: "left" })
+	doc.text([`${orderData.amount} €`], 192, 140, { align: "right" })
+
+	res.type("pdf").send(doc.output());
+};
+
+module.exports = { allOrders, orderById, queryOrder, addOrder, downloadOrder };

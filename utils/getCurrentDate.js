@@ -31,7 +31,7 @@ const currentDate = (type) => {
 			return `${date.year}-${date.month}-${date.day}`;
 
 		case "full":
-			return `${date.year}-${date.month}-${date.day}-${date.hours}:${date.minutes}:${date.seconds}`;
+			return `${date.year}-${date.month}-${date.day} ${date.hours}:${date.minutes}:${date.seconds}`;
 		
 		case "order":
 			return `${date.day}/${date.month}/${date.year}`

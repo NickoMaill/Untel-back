@@ -1,0 +1,31 @@
+[2022-07-23T17:29:26.047Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:29:29.645Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:29:29.647Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:30:21.855Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:30:25.166Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:30:25.168Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:30:47.159Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:30:50.754Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:30:50.755Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:31:33.035Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:31:35.427Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:31:35.429Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:31:50.481Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:31:53.751Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:31:53.754Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:32:07.239Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:32:10.105Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:32:10.107Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:35:22.646Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:35:25.495Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:35:25.496Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:43:30.357Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:43:33.693Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:43:33.698Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:43:34.103Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:43:37.125Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:43:37.130Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:52:13.643Z] -- debug -- [firstDataDB] : first data correctly fetched
+[2022-07-23T17:52:16.550Z] -- debug -- [instagram] : data correctly fetched
+[2022-07-23T17:52:16.552Z] -- debug -- [instagram] : file success update
+[2022-07-23T17:52:29.244Z] -- verbose -- [updateAlbum - 1cb06cb7-fa59-4819-a76f-2ae2581464c9] : album correctly updated
