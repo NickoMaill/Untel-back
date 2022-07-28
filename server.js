@@ -1,11 +1,9 @@
 // MANAGERS
 const configManager = require("./@managers/configManager.js");
+const env = configManager.configEnv;
 
 // IMPORT
 const express = require("express");
-require("dotenv").config({
-	path: configManager(),
-});
 const cors = require("cors");
 const path = require("path");
 const listEndPoints = require("express-list-endpoints");
@@ -27,7 +25,7 @@ const { lookup } = require("geoip-lite");
 
 // CONST
 const app = express();
-const PORT = process.env.PORT || 8000 || 8001;
+const PORT = env.PORT || 8000 || 8001;
 
 // FUNCTION USED FOR EACH REQUEST
 app.use(express.json());
@@ -37,7 +35,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 // app.use("/instagram", apiLimiter);
 app.use(morgan("dev"));
 app.use(cors({
-	origin: process.env.APP_FRONT_BASE_URL,
+	origin: env.APP_FRONT_BASE_URL,
 }));
 app.use(sanitizeXss)
 // ROUTES INIT
@@ -65,10 +63,8 @@ app.get("*", (_req, res) => {
 app.listen(PORT, () => {
 	console.log("\n", BgGreen, "[Untel's Backend configuration loaded] ⚠️ local only ⚠️", Reload, "\n");
 
-	for (let variable in process.env) {
-		if (variable.startsWith("APP_")) {
-			console.log(FgRed, `${variable.padEnd(30, " ")}`, Reload, `= ${process.env[variable]}`);
-		}
+	for (let variable in env) {
+			console.log(FgRed, `${variable.padEnd(30, " ")}`, Reload, `= ${env[variable]}`);
 	}
 
 	console.log("\n______________________________________________________________\n");
@@ -97,5 +93,5 @@ app.listen(PORT, () => {
 	console.warn(FgMagenta, `[${new Date().toISOString()}] ||===========================================||`, Reload);
 	console.warn("");
 
-	console.log(`listening on port ${PORT} ✅ \n`);
+	console.log(`listening on http://localhost:${PORT} ✅ \n`);
 });

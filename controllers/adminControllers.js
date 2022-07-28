@@ -1,8 +1,10 @@
 // LIBRARY IMPORTS
 const bcrypt = require("bcrypt");
 const { okStatus, errorStatus, forbiddenStatus } = require("../@managers/logManager");
-const { sendContactEmail } = require("../utils/orderEmail");
 const logManagers = require('../@managers/logManager')
+const configManager = require("../@managers/configManager.js");
+const env = configManager.configEnv;
+const { sendContactEmail } = require("../utils/orderEmail");
 
 // LOG WITH PASSWORD
 const login = async (req, res) => {
@@ -14,7 +16,7 @@ const login = async (req, res) => {
 		})
 	}
 
-	const decodeHash = await bcrypt.compare(req.body.password, process.env.APP_ADMIN_PASS).catch((err) => console.error(err));
+	const decodeHash = await bcrypt.compare(req.body.password, env.APP_ADMIN_PASS).catch((err) => console.error(err));
 	try {
 		decodeHash;
 		if (!decodeHash) {

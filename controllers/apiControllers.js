@@ -1,11 +1,13 @@
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
-const backup = require("../data/post.json");
 const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
 const logManagers = require("../@managers/logManager")
 const { okStatus, errorStatus, logger, logFormat } = require("../@managers/logManager");
+const configManager = require("../@managers/configManager.js");
+const env = configManager.configEnv;
+const backup = require("../data/post.json");
 
 const allData = async (_req, res) => {
 	const gigs = await Postgres.query("SELECT * FROM gig_dates");
@@ -36,7 +38,7 @@ const allData = async (_req, res) => {
 const instagram = async (req, res) => {
 	const array = [];
 	const data = await fetch(
-		`https://instagram28.p.rapidapi.com/medias?user_id=15269823200&batch_size=50&rapidapi-key=${process.env.APP_API_INSTAKEY}`
+		`https://instagram28.p.rapidapi.com/medias?user_id=15269823200&batch_size=50&rapidapi-key=${env.APP_API_INSTAKEY}`
 	);
 	const response = await data.json();
 

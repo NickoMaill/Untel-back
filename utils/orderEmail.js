@@ -1,13 +1,14 @@
 const fetch = require("node-fetch");
-const { APP_USER_MAIL, APP_SENDINGBLUE_API_KEY, APP_API_BASE_URL } = process.env;
-const logManagers = require("../@managers/logManager");
 const urlShortener = require('node-url-shortener');
+const logManagers = require("../@managers/logManager");
+const configManager = require("../@managers/configManager");
+const env = configManager.configEnv;
 
 
 const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 	const url = "https://api.sendinblue.com/v3/smtp/email";
 	let shortUrl;
-	urlShortener.short(`${APP_API_BASE_URL}/orders/download-order/${orderId}`, (err, url) => {
+	urlShortener.short(`${env.APP_FRONT_BASE_URL}/orders/download-order/${orderId}`, (err, url) => {
 		shortUrl = url
 		if (err) logManagers.error("urlShortener", `an error happened while shortening url - error -> ${err}`)
 	})
@@ -16,12 +17,12 @@ const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
-			"api-key": APP_SENDINGBLUE_API_KEY,
+			"api-key": env.APP_SENDINGBLUE_API_KEY,
 		},
 		body: JSON.stringify({
-			sender: { name: "Untel", email: APP_USER_MAIL },
+			sender: { name: "Untel", email: env.APP_USER_MAIL },
 			to: [{ email: clientEmail, name: clientFirstName }],
-			replyTo: { email: APP_USER_MAIL, name: "Untel" },
+			replyTo: { email: env.APP_USER_MAIL, name: "Untel" },
 			htmlContent: `
 			<html>
 				<body>
@@ -54,12 +55,12 @@ const sendContactEmail = (subject, message, email) => {
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
-			"api-key": APP_SENDINGBLUE_API_KEY,
+			"api-key": env.APP_SENDINGBLUE_API_KEY,
 		},
 		body: JSON.stringify({
-			sender: { name: "Untel", email: APP_USER_MAIL },
-			to: [{ email: APP_USER_MAIL, name: "contact" }],
-			replyTo: { email: APP_USER_MAIL, name: "Untel" },
+			sender: { name: "Untel", email: env.APP_USER_MAIL },
+			to: [{ email: env.APP_USER_MAIL, name: "contact" }],
+			replyTo: { email: env.APP_USER_MAIL, name: "Untel" },
 			htmlContent: `
 			<html>
 				<body>
