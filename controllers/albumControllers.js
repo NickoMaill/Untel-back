@@ -27,7 +27,7 @@ const allAlbums = async (_req, res) => {
 			success: false,
 			message: "an error happened when fetching datas",
 		});
-		logManagers.error("allAlbums", "an error happened when fetching datas");
+		logManagers.error("allAlbums", `an error happened when fetching datas - error details -> ${err.detail}`);
 	}
 };
 
@@ -47,7 +47,7 @@ const albumById = async (req, res) => {
 			success: false,
 			message: "an error happened while charging album",
 		});
-		logManagers.error("albumById", "an error happened when fetching datas");
+		logManagers.error("albumById", `an error happened when fetching datas - error details -> ${err.detail}`);
 	}
 };
 
@@ -66,7 +66,7 @@ const addAlbum = async (req, res) => {
 
 	try {
 		await Postgres.query(
-			"INSERT INTO albums (album_id, title, subtitle, release_date, description, playlist_link, video_link, photo_path, color, is_released, price, track_list, shop_link, stream_links, added_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+			"INSERT INTO albums (album_id, title, subtitle, release_date, description, playlist_link, video_link, photo_path, color, is_released, price, track_list, shop_link, stream_links, added_at, is_selling) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)",
 			[
 				id,
 				req.body.title,
@@ -83,6 +83,7 @@ const addAlbum = async (req, res) => {
 				req.body.shopLink,
 				req.body.streamLinks,
 				new Date(),
+				req.body.isSelling,
 			]
 		);
 		fs.renameSync(req.file.path, path.join(req.file.destination, `${fileName}`));
@@ -98,7 +99,7 @@ const addAlbum = async (req, res) => {
 			success: false,
 			message: "an error happened when add an album",
 		});
-		logManagers.error(`addAlbum - ${id}`, "an error happened while updating album data");
+		logManagers.error(`addAlbum - ${id}`, `an error happened while updating album data - error details -> ${err.detail}`);
 	}
 };
 
@@ -121,12 +122,14 @@ const updateAlbum = async (req, res) => {
 				req.params.id,
 			]);
 			imgPath = photoPath.rows[0].photo_path;
+			logManagers.verbose("updateAlbumPicture", `success photo album updating`)
 		} catch (err) {
 			console.error(err);
 			res.status(400).json({
 				success: false,
 				message: "an error happened while updating album data",
 			});
+			logManagers.error("updateAlbumPicture", `an error happened while updating photo_path - error details -> ${err.detail}`)
 			return;
 		}
 	} else {
@@ -137,7 +140,7 @@ const updateAlbum = async (req, res) => {
 
 	try {
 		await Postgres.query(
-			"UPDATE albums SET title = $1, subtitle = $2, release_date = $3, description = $4, playlist_link = $5, video_link = $6, photo_path = $7, color = $8, is_released = $9, price = $10, track_list = $11, shop_link = $12, stream_links = $13, updated_at = $14 WHERE album_id = $15",
+			"UPDATE albums SET title = $1, subtitle = $2, release_date = $3, description = $4, playlist_link = $5, video_link = $6, photo_path = $7, color = $8, is_released = $9, price = $10, track_list = $11, shop_link = $12, stream_links = $13, updated_at = $14, is_selling = $15 WHERE album_id = $16",
 			[
 				req.body.title,
 				req.body.subtitle,
@@ -153,6 +156,7 @@ const updateAlbum = async (req, res) => {
 				req.body.shopLink,
 				req.body.streamLinks,
 				new Date(),
+				req.body.isSelling,
 				req.params.id,
 			]
 		);
@@ -173,7 +177,7 @@ const updateAlbum = async (req, res) => {
 			success: false,
 			message: "an error happened while updating album data",
 		});
-		logManagers.error(`updateAlbum - ${req.params.id}`, "an error happened while updating album data");
+		logManagers.error(`updateAlbum - ${req.params.id}`, `an error happened while updating album data - error details -> ${err.detail}`);
 	}
 };
 
@@ -189,7 +193,7 @@ const deleteAlbum = async (req, res) => {
 		logManagers.verbose(`deleteAlbum - ${req.params.id}`, "album correctly updated");
 	} catch (err) {
 		console.error(err);
-		logManagers.error(`deleteAlbum - ${req.params.id}`, "an error happened while updating album data");
+		logManagers.error(`deleteAlbum - ${req.params.id}`, `an error happened while updating album data - error details -> ${err.detail}`);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while updating album data",

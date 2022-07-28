@@ -13,7 +13,7 @@ const sanitizeObject = (object) => {
 }
 
 const sanitizeXss = (req, _res, next) => {
-        if (typeof req.body === "object") {
+        if (req.body && typeof req.body === "object") {
             sanitizeObject(req.body);
         } else if (typeof req.body === "string") {
             req.body = xss(req.body);

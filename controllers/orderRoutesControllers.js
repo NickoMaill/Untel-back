@@ -2,28 +2,38 @@
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { jsPDF } = require("jspdf");
+const path = require('path');
 //UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
 const sendOrderMail = require("../utils/orderEmail");
 const moment = require("moment");
 const { databaseDate } = require("../utils/formatDate");
 const sendOrderEmail = require("../utils/orderEmail");
+const logManagers = require("../@managers/logManager");
 
 // GET ALL ORDER FROM DB
 const allOrders = async (_req, res) => {
 	const orders = await Postgres.query("SELECT * FROM orders ORDER BY date_of_order DESC");
+
 	try {
 		orders;
+
 		res.status(200).json({
 			success: true,
 			ordersCount: orders.rowCount,
 			orders: orders.rows,
 		});
+
+		logManagers.info("getAllOrder", `all order successfully fetched`);
 	} catch (err) {
 		console.error(err);
+
+		logManagers.error("getAllOrder", `an error happened while charging all order - error -> ${err.detail}`);
+
 		res.status(400).json({
 			success: false,
 			message: "an error happened while charging orders",
+			error: err,
 		});
 	}
 };
@@ -34,22 +44,28 @@ const orderById = async (req, res) => {
 
 	try {
 		order;
+
 		res.status(200).json({
 			success: true,
 			order: order.rows,
 		});
+
+		logManagers.info("getOrderById", `order ${req.params.id} successfully fetched`);
 	} catch (err) {
 		console.error(err);
+
+		logManagers.error("getAllOrder", `an error happened while charging order ${req.params.id} - error -> ${err.detail}`);
+
 		res.status(400).json({
 			success: false,
 			message: "an error happened while charging the order",
+			error: err,
 		});
 	}
 };
 
 // SEARCH ORDER BY QUERY
 const queryOrder = async (req, res) => {
-	console.log("hello");
 	const query = req.query;
 	const queryLength = Object.keys(req.query).length;
 	const orders = await Postgres.query("SELECT * FROM orders ORDER BY date_of_order DESC");
@@ -123,26 +139,29 @@ const queryOrder = async (req, res) => {
 						sqlString += formatQueryKeys.toLocaleLowerCase() + " = " + formatQuery + " AND ";
 					}
 				}
-				console.log(queryKeys);
 			}
-			sqlString = sqlString.substring(0, sqlString.length - 4);
-			console.log(sqlString);
 
-			const filteredClient = await Postgres.query(
-				`SELECT * FROM orders WHERE ${sqlString} ORDER BY date_of_order DESC`
-			);
+			sqlString = sqlString.substring(0, sqlString.length - 4);
+
+			const filteredClient = await Postgres.query(`SELECT * FROM orders WERE ${sqlString} ORDER BY date_of_order DESC`);
 
 			res.json({
 				success: true,
 				ordersCount: filteredClient.rowCount,
 				orders: filteredClient.rows,
 			});
+
+			logManagers.info("getOrderByQuery", `order successfully fetched by query`);
 		}
 	} catch (err) {
 		console.error(err);
+
+		logManagers.error("getAllOrder", `an error happened while charging order - error -> ${err.detail}`);
+
 		res.status(400).json({
 			success: false,
 			message: "an error happened while charging orders",
+			error: err,
 		});
 	}
 };
@@ -155,10 +174,9 @@ const addOrder = async (req, res) => {
 			message: "an error happened",
 		});
 	}
-	
+
 	try {
-		await Postgres.query(
-			"INSERT INTO orders (order_id, item_id, name_item, client_firstName, client_lastName, client_email, city, country, amount, currency, date_of_order, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
+		await Postgres.query("INSERT INTO orders (order_id, item_id, name_item, client_firstName, client_lastName, client_email, city, country, amount, currency, date_of_order, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
 			[
 				req.body.id,
 				req.body.itemId,
@@ -174,18 +192,22 @@ const addOrder = async (req, res) => {
 				req.body.address,
 			]
 		);
+
 		sendOrderEmail(req.body.id, req.body.clientEmail, req.body.clientFirstName);
+
 		res.status(201).json({
 			success: true,
 			message: "order added",
 		});
+
 		console.log("order added");
 	} catch (err) {
+		console.error(err);
+
 		res.status(400).json({
 			success: false,
 			message: "ans error happened",
 		});
-		console.error(err);
 	}
 };
 
@@ -199,6 +221,12 @@ const downloadOrder = async (req, res) => {
 		format: "a4",
 		putOnlyUsedFonts: true,
 	});
+
+	if (order.rowCount === 0) {
+		logManagers.error("downloadOrder", `an error happened while fetching order ${req.params.id}`)
+		return res.status(404).sendFile(path.resolve(__dirname, '../views/404.html'))
+	}
+
 	moment.locale("fr");
 	doc.setFontSize(12);
 
@@ -227,15 +255,16 @@ const downloadOrder = async (req, res) => {
 			padding: 0,
 		},
 	];
+
 	let data = [
 		{ description: orderData.name_item, prix: `${orderData.amount - 2} €` },
 		{ description: "frais de livraison", prix: `2 €` },
 	];
+
 	doc.table(15, 100, data, headerConfig);
 
 	doc.text(["Total TTC"], 15, 140, { align: "left" });
 	doc.text([`${orderData.amount} €`], 192, 140, { align: "right" });
-
 	res.type("pdf").send(doc.output());
 };
 

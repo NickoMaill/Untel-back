@@ -25,7 +25,7 @@ const allData = async (_req, res) => {
 		logManagers.debug('firstDataDB', 'first data correctly fetched')
 	} catch (err) {
 		console.error(err);
-		logManagers.error('firstDataDB', 'an error happened when fetching datas')
+		logManagers.error('firstDataDB', `an error happened when fetching datas - error details -> ${err.detail}`)
 		res.status(400).json({
 			success: false,
 			message: "An error happened when fetching datas",
@@ -57,7 +57,7 @@ const instagram = async (req, res) => {
 		}
 	} catch (err) {
 		console.error(err);
-		logManagers.error("instagram", "error happened while charging post")
+		logManagers.error("instagram", `error happened while charging post - error details -> ${err.detail}`)
 		res.status(400).json({
 			success: false,
 			message: "an error happened whiles charging post",

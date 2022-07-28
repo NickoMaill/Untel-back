@@ -31,7 +31,7 @@ const login = async (req, res) => {
 			goodPassword: true,
 			message: "access granted",
 		});
-		logManagers.info("AdminLogin", "User correctly logged");
+		logManagers.info("AdminLogin", `User correctly logged`);
 		return;
 		
 	} catch (err) {
@@ -40,7 +40,7 @@ const login = async (req, res) => {
 			success: false,
 			message: "an error happened",
 		});
-		logManagers.info("AdminLogin", "User correctly logged");
+		logManagers.info("AdminLogin", `User correctly logged - error details -> ${err.detail}`);
 		return;
 	}
 };

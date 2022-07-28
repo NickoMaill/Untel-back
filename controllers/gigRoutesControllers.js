@@ -2,6 +2,7 @@
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { v4: uuidv4 } = require("uuid");
+const logManagers = require("../@managers/logManager");
 
 // GET ALL GIGS DATA
 
@@ -15,8 +16,10 @@ const allGigs = async (_req, res) => {
 			gigDates: gigDate.rows,
 			gigNb: gigDate.rowCount,
 		});
+		logManagers.info("getAllGigs", `all gigs data success loaded`);
 	} catch (err) {
 		console.error(err);
+		logManagers.error("getAllGigs", `an error happened when charging gig datas - error details -> ${err.detail}`);
 		res.status(400).json({
 			success: false,
 			message: "cannot get gig_data",
@@ -27,17 +30,20 @@ const allGigs = async (_req, res) => {
 
 // ADD A GIG TO THE DB
 const addGig = async (req, res) => {
+	const id = uuidv4();
+
 	if (req.script) {
 		return res.status(403).json({
 			success: false,
 			message: "an error happened",
 		});
 	}
+	
 	try {
 		await Postgres.query(
 			"INSERT INTO gig_dates (event_id, place, city, country, date, event_link, added_at, address) VALUES($1, $2, $3, $4, $5, $6, $7, $8)",
 			[
-				uuidv4(),
+				id,
 				req.body.place,
 				req.body.city,
 				req.body.country,
@@ -51,8 +57,10 @@ const addGig = async (req, res) => {
 			success: true,
 			message: "gig date added",
 		});
+		logManagers.info("updateGig", `gig ${id} successfully added`);
 	} catch (err) {
 		console.error(err);
+		logManagers.error("getAllGigs", `an error happened while adding gig - error details -> ${err.detail}`);
 		res.status(400).json({
 			success: false,
 			message: "cannot add gig date",
@@ -69,6 +77,7 @@ const updateGig = async (req, res) => {
 			message: "an error happened",
 		});
 	}
+
 	console.log(req.params.id);
 	try {
 		await Postgres.query(
@@ -90,11 +99,14 @@ const updateGig = async (req, res) => {
 			message: "gig updated",
 		});
 		console.log("gig updated");
+		logManagers.info("updateGig", `gig ${req.params.id} successfully updated`);
 	} catch (err) {
 		console.error(err);
+		logManagers.error("getAllGigs", `an error happened while updating gig ${req.params.id}- error details -> ${err.detail}`);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while updating gig data",
+			error: err,
 		});
 		console.log("an error happened while updating gig data");
 	}
@@ -104,8 +116,10 @@ const updateGig = async (req, res) => {
 const deleteGig = async (req, res) => {
 	try {
 		await Postgres.query("DELETE FROM gig_date WHERE gig_id = $1", [req.params.id]);
+		logManagers.info("deleteGig", `gig ${req.params.id} successfully deleted`);
 	} catch (err) {
 		console.error(err);
+		logManagers.error("deleteGig", `an error happened while deleting gig ${req.params.id} - error details -> ${err.detail}`);
 		res.status(400).json({
 			success: false,
 			message: "cannot delete gig date",

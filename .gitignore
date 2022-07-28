@@ -3,3 +3,4 @@
 config.env
 .env.development.local
 .DS_Store
+/logs

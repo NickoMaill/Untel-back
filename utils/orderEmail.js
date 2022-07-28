@@ -1,9 +1,16 @@
 const fetch = require("node-fetch");
 const { APP_USER_MAIL, APP_SENDINGBLUE_API_KEY, APP_API_BASE_URL } = process.env;
 const logManagers = require("../@managers/logManager");
+const urlShortener = require('node-url-shortener');
+
 
 const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 	const url = "https://api.sendinblue.com/v3/smtp/email";
+	let shortUrl;
+	urlShortener.short(`${APP_API_BASE_URL}/orders/download-order/${orderId}`, (err, url) => {
+		shortUrl = url
+		if (err) logManagers.error("urlShortener", `an error happened while shortening url - error -> ${err}`)
+	})
 	const options = {
 		method: "POST",
 		headers: {
@@ -20,7 +27,7 @@ const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 				<body>
 					<h1>Merci pour votre commande !</h1><br/>
 					<p>ton achat est tès important il permet de soutenir mon activité, comme ça je peux vous preparer du nouveau contenu !</p><br/>
-					<span>tu peux telecharger ta facture en cliquant sur sce lien <a href="${APP_API_BASE_URL}/orders/download-order/${orderId}">${APP_API_BASE_URL}/orders/download-order/${orderId}</a></span> 		
+					<span>tu peux telecharger ta facture en cliquant sur sce lien <a href="${shortUrl}">${shortUrl}</a></span> 		
 				</body> 	
 			</html>`,
 			subject: `Merci pour votre commande n° ${orderId}`,
@@ -35,7 +42,7 @@ const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 		})
 		.catch((err) => {
 			console.error("error:" + err);
-			logManagers.error("sendOrderEmail", `error when sending email from ${email}`);
+			logManagers.error("sendOrderEmail", `error when sending email from ${email} - error -> ${err.detail}`);
 		});
 };
 
@@ -72,7 +79,7 @@ const sendContactEmail = (subject, message, email) => {
 		})
 		.catch((err) => {
 			console.error("error:" + err);
-			logManagers.error("sendContactEmail", `error when sending email from ${email}`);
+			logManagers.error("sendContactEmail", `error when sending email from ${email} - error details -> ${err.detail}`);
 		});
 };
 
