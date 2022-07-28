@@ -1,6 +1,13 @@
+// LIBRARY IMPORT
 const express = require("express");
+
+// ROUTER 
 const route = express.Router();
+
+// CONTROLLER IMPORT
 const { login, contactEmail } = require("../controllers/adminControllers");
+
+// MIDDLEWARE IMPORT
 const validBody = require("../middlewares/checkBodyInjection");
 
 // LOGIN BACK - OFFICE 

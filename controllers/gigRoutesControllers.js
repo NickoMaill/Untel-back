@@ -2,6 +2,8 @@
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { v4: uuidv4 } = require("uuid");
+
+// MANAGERS IMPORT
 const logManagers = require("../@managers/logManager");
 
 // GET ALL GIGS DATA

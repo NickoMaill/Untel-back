@@ -1,9 +1,13 @@
 // LIBRARY IMPORTS
 const bcrypt = require("bcrypt");
+
+// MANAGERS IMPORT
 const { okStatus, errorStatus, forbiddenStatus } = require("../@managers/logManager");
 const logManagers = require('../@managers/logManager')
 const configManager = require("../@managers/configManager.js");
 const env = configManager.configEnv;
+
+// UTILS IMPORT
 const { sendContactEmail } = require("../utils/orderEmail");
 
 // LOG WITH PASSWORD

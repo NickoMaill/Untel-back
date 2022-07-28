@@ -1,9 +1,13 @@
 // LIBRARY IMPORT
 const express = require("express");
+
+// ROUTER
 const route = express.Router();
 
 //CONTROLLERS IMPORTS
 const { allOrders, orderById, addOrder, queryOrder, downloadOrder } = require("../controllers/orderRoutesControllers");
+
+// MIDDLEWARE IMPORT
 const validBody = require("../middlewares/checkBodyInjection");
 
 route.get("/", allOrders);

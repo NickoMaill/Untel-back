@@ -1,6 +1,9 @@
-const { FgGreen, Reload, FgRed, FgYellow } = require("../utils/logColors");
-const winston = require("winston");
+// LIBRARY IMPORT
 const path = require("path");
+const winston = require("winston");
+
+// UTILS IMPORT
+const { FgGreen, Reload, FgRed, FgYellow } = require("../utils/logColors");
 
 const okStatus = (method, uri, status) => {
 	return console.log(`${method} '${uri}'`, FgGreen, status.toString(), Reload, "successfully requested");

@@ -1,3 +1,4 @@
+// LIBRARY IMPORT
 const path = require("path");
 
 function checkTypeFile(req, res, next) {

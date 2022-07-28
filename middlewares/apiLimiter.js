@@ -1,4 +1,7 @@
+// LIBRARY IMPORT
 const limiter = require("express-rate-limit");
+
+// UTILS IMPORT
 const logColor = require("../utils/logColors")
 
 const instaLimiter = limiter({
@@ -20,8 +23,9 @@ const serverLimiter = limiter({
 	legacyHeaders: false,
 	handler: (_req, res, next, _options) => {
 		console.warn("you've done too many requests...");
+		res.status(403).sendFile()
 		
 	}
 })
 
-module.exports = { instaLimiter };
+module.exports = { instaLimiter, serverLimiter };

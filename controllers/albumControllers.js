@@ -4,12 +4,14 @@ const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
-const logColors = require("../utils/logColors");
+
+// MANAGERS IMPORT
 const logManagers = require("../@managers/logManager");
 
 // UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
 const formatDate = require("../utils/formatDate");
+const logColors = require("../utils/logColors");
 
 // GET ALL ALBUMS DATA
 const allAlbums = async (_req, res) => {

@@ -1,8 +1,10 @@
 // LIBRARY IMPORTS
 const express = require("express");
-const route = express.Router();
 const multer = require("multer");
 const upload = multer({ dest: "public/uploads/albumCovers" });
+
+// ROUTER
+const route = express.Router();
 
 // CONTROLLER IMPORTS
 const { allAlbums, albumById, addAlbum, updateAlbum, deleteAlbum } = require("../controllers/albumControllers");

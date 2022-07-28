@@ -3,13 +3,14 @@ const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const { jsPDF } = require("jspdf");
 const path = require('path');
+const moment = require("moment");
+
+// MANAGERS IMPORT
+const logManagers = require("../@managers/logManager");
+
 //UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
-const sendOrderMail = require("../utils/orderEmail");
-const moment = require("moment");
-const { databaseDate } = require("../utils/formatDate");
 const sendOrderEmail = require("../utils/orderEmail");
-const logManagers = require("../@managers/logManager");
 
 // GET ALL ORDER FROM DB
 const allOrders = async (_req, res) => {

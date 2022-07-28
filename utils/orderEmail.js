@@ -1,9 +1,11 @@
+// LIBRARY IMPORT
 const fetch = require("node-fetch");
 const urlShortener = require('node-url-shortener');
+
+// MANAGERS IMPORT
 const logManagers = require("../@managers/logManager");
 const configManager = require("../@managers/configManager");
 const env = configManager.configEnv;
-
 
 const sendOrderEmail = (orderId, clientEmail, clientFirstName) => {
 	const url = "https://api.sendinblue.com/v3/smtp/email";

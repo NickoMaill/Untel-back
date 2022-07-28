@@ -1,12 +1,16 @@
+// LIBRARY IMPORT
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
+
+// MANAGERS IMPORT
 const logManagers = require("../@managers/logManager")
-const { okStatus, errorStatus, logger, logFormat } = require("../@managers/logManager");
 const configManager = require("../@managers/configManager.js");
 const env = configManager.configEnv;
+
+// DATA IMPORT
 const backup = require("../data/post.json");
 
 const allData = async (_req, res) => {
