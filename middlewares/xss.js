@@ -1,5 +1,5 @@
 // LIBRARY IMPORT
-const { default: xss } = require("xss");
+const xss = require("xss");
 
 const sanitizeObject = (object) => {
     for (let key in object) {

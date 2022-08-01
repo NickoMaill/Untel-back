@@ -18,21 +18,26 @@ const ordersRoutes = require("./routes/orderRoutes");
 
 // MIDDLEWARES
 const apiLimiter = require("./middlewares/apiLimiter");
-const { BgGreen, FgYellow, Reload, FgRed, FgMagenta } = require("./utils/logColors");
+const { BgGreen, FgYellow, Reload, FgRed, FgMagenta, FgBlack } = require("./utils/logColors");
 const sanitizeXss = require("./middlewares/xss.js");
-const { logger } = require("./@managers/logManager.js");
-const { lookup } = require("geoip-lite");
+
+// WATCHDOGS IMPORT
+const instagramWatchdog = require("./@watchdog/instagramWatchdog")
 
 // CONST
 const app = express();
 const PORT = env.PORT || 8000 || 8001;
+
+// CRON INITIALIZATION
+instagramWatchdog.initCron();
 
 // FUNCTION USED FOR EACH REQUEST
 app.use(express.json());
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-// app.use("/instagram", apiLimiter);
+app.use("/instagram", apiLimiter.instaLimiter);
+app.use("*", apiLimiter.serverLimiter);
 app.use(morgan("dev"));
 app.use(cors({
 	origin: env.APP_FRONT_BASE_URL,
@@ -46,11 +51,7 @@ app.use("/albums", albumRoutes);
 app.use("/orders", ordersRoutes);
 
 app.get("/", (req, res) => {
-	console.log(req.headers['x-forwarded-for'] || req.connection.remoteAddress);
-	console.log(lookup(req.ip));
-	res.send(
-		"<h1>Welcome on Untel Website Backend</h1><br><span>please visite our website at <a href='https://untel-officiel.fr/'>https://untel-officiel.fr/</a></span>"
-	);
+	res.send("<h1>Welcome on Untel Website Backend</h1><br><span>please visite our website at <a href='https://untel-officiel.fr/'>https://untel-officiel.fr/</a></span>");
 });
 
 // GUARD IF ERROR ON URL
@@ -61,7 +62,7 @@ app.get("*", (_req, res) => {
 
 // SERVER INITIALIZATION
 app.listen(PORT, () => {
-	console.log("\n", BgGreen, "[Untel's Backend configuration loaded] ⚠️ local only ⚠️", Reload, "\n");
+	console.log("\n", BgGreen, FgBlack, "[Untel's Backend configuration loaded] ⚠️ local only ⚠️", Reload, "\n");
 
 	for (let variable in env) {
 			console.log(FgRed, `${variable.padEnd(30, " ")}`, Reload, `= ${env[variable]}`);
@@ -71,13 +72,14 @@ app.listen(PORT, () => {
 	console.warn("");
 
 	listEndPoints(app).map((info) => {
-		const nameRoute = info.middlewares;
+		const nameRoute = info.middlewares[1] || info.middlewares[0];
+		const arrow = "⇨";
 		console.info(
-			`[${nameRoute[1] || nameRoute[0]}] \t\t\t`,
+			`${nameRoute.padEnd(30, " ")}`,
 			FgYellow,
-			`${info.methods}`,
+			`${info.methods[0].padEnd(10)}`,
 			Reload,
-			` \t\t⇨\t\t"${info.path}"`
+			`${arrow.padEnd(10, " ")} "${info.path}"`
 		);
 	});
 
@@ -93,5 +95,5 @@ app.listen(PORT, () => {
 	console.warn(FgMagenta, `[${new Date().toISOString()}] ||===========================================||`, Reload);
 	console.warn("");
 
-	console.log(`listening on http://localhost:${PORT} ✅ \n`);
+	console.log(`listening on http://localhost:${PORT} ✅`);
 });

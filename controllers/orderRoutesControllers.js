@@ -10,7 +10,7 @@ const logManagers = require("../@managers/logManager");
 
 //UTILS IMPORTS
 const currentDate = require("../utils/getCurrentDate");
-const sendOrderEmail = require("../utils/orderEmail");
+const emailEngine = require("../utils/orderEmail");
 
 // GET ALL ORDER FROM DB
 const allOrders = async (_req, res) => {
@@ -194,7 +194,7 @@ const addOrder = async (req, res) => {
 			]
 		);
 
-		sendOrderEmail(req.body.id, req.body.clientEmail, req.body.clientFirstName);
+		emailEngine.sendOrderEmail(req.body.id, req.body.clientEmail, req.body.clientFirstName);
 
 		res.status(201).json({
 			success: true,

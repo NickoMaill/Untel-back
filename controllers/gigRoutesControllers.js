@@ -30,6 +30,26 @@ const allGigs = async (_req, res) => {
 	}
 };
 
+const gigById = async (req, res) => {
+	const gig = await Postgres.query("SELECT * FROM gig_dates WHERE event_id = $1", [req.params.id])
+
+	try {
+		gig;
+		res.json({
+			success: true,
+			gigDate: gig.rows,
+		})
+	} catch (err) {
+		console.error(err);
+		logManagers.error("gigById", `an error happened while charging gigDate ${req.params.id} - error - ${JSON.stringify(err)}`)
+		res.json({
+			success: false,
+			message: "cannot get gig",
+			error: err,
+		})
+	}
+}
+
 // ADD A GIG TO THE DB
 const addGig = async (req, res) => {
 	const id = uuidv4();
@@ -129,4 +149,4 @@ const deleteGig = async (req, res) => {
 		});
 	}
 };
-module.exports = { allGigs, addGig, updateGig, deleteGig };
+module.exports = { allGigs, gigById, addGig, updateGig, deleteGig };

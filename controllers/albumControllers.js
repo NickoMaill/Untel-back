@@ -15,7 +15,9 @@ const logColors = require("../utils/logColors");
 
 // GET ALL ALBUMS DATA
 const allAlbums = async (_req, res) => {
-	const albums = await Postgres.query("SELECT * FROM albums ORDER BY release_date DESC");
+	const albums = await Postgres.query(
+		"SELECT album_id, title, subtitle, release_date, photo_path, is_released FROM albums ORDER BY release_date DESC"
+	);
 	try {
 		albums;
 		res.status(200).json({
@@ -35,6 +37,7 @@ const allAlbums = async (_req, res) => {
 
 // GET ALBUM BY ID
 const albumById = async (req, res) => {
+	console.log(req.params.id);
 	const album = await Postgres.query("SELECT * FROM albums WHERE album_id = $1", [req.params.id]);
 	try {
 		album;
@@ -101,7 +104,10 @@ const addAlbum = async (req, res) => {
 			success: false,
 			message: "an error happened when add an album",
 		});
-		logManagers.error(`addAlbum - ${id}`, `an error happened while updating album data - error details -> ${err.detail}`);
+		logManagers.error(
+			`addAlbum - ${id}`,
+			`an error happened while updating album data - error details -> ${err.detail}`
+		);
 	}
 };
 
@@ -113,27 +119,14 @@ const updateAlbum = async (req, res) => {
 			message: "an error happened",
 		});
 	}
-
+	const photoPath = await Postgres.query("SELECT photo_path FROM albums WHERE album_id = $1", [req.params.id]);
+	console.log(photoPath.rows[0].photo_path);
 	let type;
 	let fileName;
 	let imgPath;
 
 	if (!req.file) {
-		try {
-			const photoPath = await Postgres.query("SELECT photo_path FROM albums WHERE album_id = $1", [
-				req.params.id,
-			]);
-			imgPath = photoPath.rows[0].photo_path;
-			logManagers.verbose("updateAlbumPicture", `success photo album updating`)
-		} catch (err) {
-			console.error(err);
-			res.status(400).json({
-				success: false,
-				message: "an error happened while updating album data",
-			});
-			logManagers.error("updateAlbumPicture", `an error happened while updating photo_path - error details -> ${err.detail}`)
-			return;
-		}
+		imgPath = photoPath.rows[0].photo_path;
 	} else {
 		type = path.extname(req.file.originalname);
 		fileName = `${req.body.title.toLowerCase().replace(/ /g, "-")}-${currentDate("date")}${type}`;
@@ -163,6 +156,7 @@ const updateAlbum = async (req, res) => {
 			]
 		);
 		if (req.file) {
+			fs.unlinkSync(path.join(`${__dirname}/../public/${photoPath.rows[0].photo_path}`));
 			fs.renameSync(req.file.path, path.join(req.file.destination, `${fileName}`));
 		}
 
@@ -179,7 +173,10 @@ const updateAlbum = async (req, res) => {
 			success: false,
 			message: "an error happened while updating album data",
 		});
-		logManagers.error(`updateAlbum - ${req.params.id}`, `an error happened while updating album data - error details -> ${err.detail}`);
+		logManagers.error(
+			`updateAlbum - ${req.params.id}`,
+			`an error happened while updating album data - error details -> ${err.detail}`
+		);
 	}
 };
 
@@ -195,7 +192,10 @@ const deleteAlbum = async (req, res) => {
 		logManagers.verbose(`deleteAlbum - ${req.params.id}`, "album correctly updated");
 	} catch (err) {
 		console.error(err);
-		logManagers.error(`deleteAlbum - ${req.params.id}`, `an error happened while updating album data - error details -> ${err.detail}`);
+		logManagers.error(
+			`deleteAlbum - ${req.params.id}`,
+			`an error happened while updating album data - error details -> ${err.detail}`
+		);
 		res.status(400).json({
 			success: false,
 			message: "an error happened while updating album data",

@@ -2,25 +2,23 @@
 const bcrypt = require("bcrypt");
 
 // MANAGERS IMPORT
-const { okStatus, errorStatus, forbiddenStatus } = require("../@managers/logManager");
-const logManagers = require('../@managers/logManager')
+const logManagers = require("../@managers/logManager");
 const configManager = require("../@managers/configManager.js");
 const env = configManager.configEnv;
 
 // UTILS IMPORT
-const { sendContactEmail } = require("../utils/orderEmail");
+const emailEngine = require("../modules/emailModule");
 
 // LOG WITH PASSWORD
 const login = async (req, res) => {
-
 	if (req.script) {
 		return res.status(403).json({
 			success: false,
 			message: "an error happened",
-		})
+		});
 	}
 
-	const decodeHash = await bcrypt.compare(req.body.password, env.APP_ADMIN_PASS).catch((err) => console.error(err));
+	const decodeHash = await bcrypt.compare(req.body.password, env.APP_ADMIN_PASS).catch((err) => logManagers.error("login.decodeHash", `an error happened when admin login - error -> ${JSON.stringify(err)}`));
 	try {
 		decodeHash;
 		if (!decodeHash) {
@@ -39,7 +37,6 @@ const login = async (req, res) => {
 		});
 		logManagers.info("AdminLogin", `User correctly logged`);
 		return;
-		
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({
@@ -57,10 +54,10 @@ const contactEmail = (req, res) => {
 		return res.status(403).json({
 			success: false,
 			message: "an error happened",
-		})
+		});
 	}
-	
-	sendContactEmail(req.body.subject, req.body.messageBody, req.body.contactEmail);
+
+	emailEngine.sendContactEmail(req.body.subject, req.body.messageBody, req.body.contactEmail);
 	res.status(202).json({
 		success: true,
 		message: "email send",

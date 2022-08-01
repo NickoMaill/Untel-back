@@ -2,13 +2,15 @@
 const { Pool } = require("pg");
 const Postgres = new Pool({ ssl: { rejectUnauthorized: false } });
 const fetch = require("node-fetch");
-const fs = require("fs");
-const path = require("path");
 
 // MANAGERS IMPORT
-const logManagers = require("../@managers/logManager")
+const logManagers = require("../@managers/logManager");
 const configManager = require("../@managers/configManager.js");
 const env = configManager.configEnv;
+
+// UTILS IMPORT
+const { writeJson } = require("../utils/writeJSON");
+const { formatUrl } = require("../utils/formatUrl");
 
 // DATA IMPORT
 const backup = require("../data/post.json");
@@ -19,8 +21,6 @@ const allData = async (_req, res) => {
 		"SELECT album_id, title, subtitle, release_date, photo_path, is_released FROM albums"
 	);
 	try {
-		gigs;
-		albums;
 		res.status(200).json({
 			success: true,
 			gigs: gigs.rows,
@@ -28,10 +28,10 @@ const allData = async (_req, res) => {
 			albums: albums.rows,
 			albumsCount: albums.rowCount,
 		});
-		logManagers.debug('firstDataDB', 'first data correctly fetched')
+		logManagers.debug("firstDataDB", "first data correctly fetched");
 	} catch (err) {
 		console.error(err);
-		logManagers.error('firstDataDB', `an error happened when fetching datas - error details -> ${err.detail}`)
+		logManagers.error("firstDataDB", `an error happened when fetching datas - error details -> ${err.detail}`);
 		res.status(400).json({
 			success: false,
 			message: "An error happened when fetching datas",
@@ -40,35 +40,18 @@ const allData = async (_req, res) => {
 };
 
 const instagram = async (req, res) => {
-	const array = [];
-	const data = await fetch(
-		`https://instagram28.p.rapidapi.com/medias?user_id=15269823200&batch_size=50&rapidapi-key=${env.APP_API_INSTAKEY}`
-	);
-	const response = await data.json();
 
-	try {
-		response;
-		if (res.statusCode === 429 || data.status === 429) {
-			res.status(200).json(backup[0].data.user.edge_owner_to_timeline_media.edges);
-			logManagers.debug("instagram", "get data from backup JSON")
-		} else {
-			array.push(response);
-			fs.writeFile(__dirname + "/../data/post.json", JSON.stringify(array, null, 2), "utf-8", (err) => {
-				if (err) console.error(err);
-				console.log("file success update");
-				logManagers.debug("instagram", "file success update")
-			});
-			res.status(200).json(array[0].data.user.edge_owner_to_timeline_media.edges);
-			logManagers.debug("instagram", "data correctly fetched")
-		}
-	} catch (err) {
-		console.error(err);
-		logManagers.error("instagram", `error happened while charging post - error details -> ${err.detail}`)
-		res.status(400).json({
-			success: false,
-			message: "an error happened whiles charging post",
-		});
-	}
+	const requestOutput = backup.map((post) => {
+		return {
+			postId: post.node.shortcode,
+			pictureUrl: `https://scp2.elfsightcdn.com/?url=https://scontent-lhr8-2.cdninstagram.com/v/${formatUrl(post.node.thumbnail_resources[1].src)}`,
+			isVideo: post.node.is_video,
+			likeCount: post.node.edge_media_preview_like.count,
+			commentCount: post.node.edge_media_to_comment.count,
+			postText: post.node.edge_media_to_caption.edges[0].node.text,
+		};
+	});
+	res.status(200).json(requestOutput);
 };
 
 module.exports = { instagram, allData };

@@ -11,7 +11,7 @@ const { allAlbums, albumById, addAlbum, updateAlbum, deleteAlbum } = require("..
 const validBody = require("../middlewares/checkBodyInjection");
 
 route.get("/all", allAlbums);
-route.get("/:id", albumById);
+route.get("/id/:id", albumById);
 route.post("/add-album", validBody, upload.single("image"), addAlbum);
 route.put("/update-album/:id", validBody, upload.single("image"), updateAlbum);
 route.delete("/delete/:id", deleteAlbum);
